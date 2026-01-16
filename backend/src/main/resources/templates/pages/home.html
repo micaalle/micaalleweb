@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
 
-    <title>"My Portfolio</title>
+    <title>My Portfolio</title>
 
     <!-- Bootstrap -->
     <link
@@ -12,23 +12,76 @@
       rel="stylesheet"
     />
 
-    <!-- TEMP inline styles so you SEE things working -->
+    <!-- Dark Mode Styles -->
     <style>
+      /* Global dark theme */
+      body {
+        background-color: #121212; /* Dark charcoal */
+        color: #e5e7eb; /* Light gray text */
+      }
+
       section {
-        scroll-margin-top: 90px; /* offset for fixed navbar */
+        scroll-margin-top: 90px; 
       }
 
       .section-title {
         font-weight: 700;
+      }
+
+      /* Navbar */
+      header {
+        background-color: #1a1a1a !important;
+      }
+
+      .navbar-brand,
+      .nav-link {
+        color: #e5e7eb !important;
+      }
+
+      .nav-link:hover {
+        color: #198754 !important; 
+      }
+
+      /* Sections */
+      #Home,
+      #Projects,
+      #About,
+      #Contact {
+        background-color: #121212;
+      }
+
+      /* Cards */
+      .card {
+        background-color: #1e1e1e; 
+        border: 1px solid #2c2c2c;
+        color: #e5e7eb;
+      }
+
+      .card-title {
+        color: #f8fafc;
+      }
+
+      .text-muted {
+        color: #94a3b8 !important;
+      }
+
+      a {
+        color: #198754;
+      }
+
+      a:hover {
+        color: #22c55e;
       }
     </style>
   </head>
 
   <body>
     <!-- ================= NAVBAR ================= -->
-    <header class="fixed-top bg-white shadow-sm">
-      <nav class="navbar navbar-expand-lg navbar-light container">
-        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home">My Portfolio</a>
+    <header class="fixed-top shadow-sm">
+      <nav class="navbar navbar-expand-lg container">
+        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home"
+          >My Portfolio</a
+        >
 
         <button
           class="navbar-toggler"
@@ -66,18 +119,20 @@
       <!-- ===== HOME ===== -->
       <section
         id="Home"
-        class="container-fluid bg-light min-vh-100 d-flex align-items-center"
+        class="container-fluid min-vh-100 d-flex align-items-center"
       >
         <div class="container text-center">
-          <h1 class="section-title" style="color: #198754">Welcome to My Portfolio</h1>
-          <p class="lead text-secondary">Hi! I’m Michael.</p>
+          <h1 class="section-title text-success mb-4" style="color: #198754">
+            Welcome to My Portfolio
+          </h1>
+          <p class="lead text-muted">Hi! I’m Michael.</p>
         </div>
       </section>
 
       <!-- ===== ABOUT ===== -->
       <section
         id="About"
-        class="container-fluid bg-white min-vh-100 d-flex align-items-center"
+        class="container-fluid min-vh-100 d-flex align-items-center"
       >
         <div class="container d-flex justify-content-center">
           <div class="card shadow-sm p-4" style="max-width: 800px; width: 100%">
@@ -98,9 +153,11 @@
       </section>
 
       <!-- ===== PROJECTS ===== -->
-      <section id="Projects" class="container-fluid bg-light min-vh-100 py-5">
+      <section id="Projects" class="container-fluid py-5">
         <div class="container">
-          <h2 class="section-title text-success mb-5">Projects</h2>
+          <h2 class="section-title text-success mb-5" style="color: #198754">
+            Projects
+          </h2>
 
           <div class="row g-4">
             <div class="col-md-4">
@@ -136,11 +193,13 @@
       <!-- ===== CONTACT ===== -->
       <section
         id="Contact"
-        class="container-fluid bg-white min-vh-100 d-flex align-items-center"
+        class="container-fluid min-vh-100 d-flex align-items-center"
       >
         <div class="container">
-          <h2 class="section-title mb-4" style="color: #198754">Contact</h2>
-          <p class="fs-5">
+          <h2 class="section-title mb-4 text-center" style="color: #198754">
+            Contact
+          </h2>
+          <p class="fs-5 text-center">
             Email me at
             <a href="mailto:mbiskup2608@gmail.com">mbiskup2608@gmail.com</a>
             <br />
@@ -157,3 +216,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
