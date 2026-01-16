@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -170,33 +170,8 @@
             Projects
           </h2>
 
-          <div class="row g-4">
-            <div class="col-md-4">
-              <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Project One</h5>
-                  <p class="card-text">Short description of the project.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Project Two</h5>
-                  <p class="card-text">Another project description.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Project Three</h5>
-                  <p class="card-text">Yet another project.</p>
-                </div>
-              </div>
-            </div>
+          <div class="row g-4" id="projects-container">
+            <!-- Projects will be dynamically injected here -->
           </div>
         </div>
       </section>
@@ -232,6 +207,184 @@
         </div>
       </section>
     </main>
+
+    <!-- ================= PROJECTS JS ================= -->
+    <script>
+      // Project data with full skills included
+      const projects = [
+        {
+          name: "Vending Machine Map",
+          description:
+            "UCF Vending Machine Locator — a full-stack web application built with the MERN stack and Mapbox integration.",
+          startDate: "03/2025",
+          endDate: "04/2025",
+          present: false,
+          link: "https://github.com/micaalle/Vending-Machine-Map",
+          skills: [
+            { name: "MongoDB", link: "https://www.mongodb.com/", icon: true },
+            { name: "Express", link: "https://expressjs.com/", icon: true },
+            { name: "React", link: "https://reactjs.org/", icon: true },
+            { name: "Node.js", link: "https://nodejs.org/", icon: true },
+            {
+              name: "TypeScript",
+              link: "https://www.typescriptlang.org/",
+              icon: true,
+            },
+            {
+              name: "HTML",
+              link: "https://developer.mozilla.org/en-US/docs/Web/HTML",
+              icon: true,
+            },
+            {
+              name: "CSS",
+              link: "https://developer.mozilla.org/en-US/docs/Web/CSS",
+              icon: true,
+            },
+            { name: "Mapbox", link: "https://www.mapbox.com/", icon: true },
+            {
+              name: "AWS Lightsail",
+              link: "https://aws.amazon.com/lightsail/",
+              icon: true,
+            },
+          ],
+        },
+        {
+          name: "CT VR Application",
+          description:
+            "VR training application designed to help first and second-year medical students become more comfortable interpreting CT scans.",
+          startDate: "06/2025",
+          endDate: "11/2025",
+          present: false,
+          link: "https://github.com/micaalle/CT-VR-App",
+          skills: [
+            { name: "Unity", link: "https://unity.com/", icon: true },
+            {
+              name: "C#",
+              link: "https://learn.microsoft.com/en-us/dotnet/csharp/",
+              icon: true,
+            },
+            {
+              name: "Oculus SDK",
+              link: "https://developer.oculus.com/",
+              icon: true,
+            },
+            { name: "Slicer3D", link: "https://www.slicer.org/", icon: true },
+            { name: "Python", link: "https://www.python.org/", icon: true },
+            {
+              name: "DICOM Viewer",
+              link: "https://www.dicomstandard.org/",
+              icon: true,
+            },
+            {
+              name: "3D Rendering",
+              link: "https://en.wikipedia.org/wiki/3D_rendering",
+              icon: true,
+            },
+            {
+              name: "Slicer Extensions",
+              link: "https://www.slicer.org/wiki/Documentation/Nightly/Extensions",
+              icon: true,
+            },
+            { name: "PyTorch", link: "https://pytorch.org/", icon: true },
+            {
+              name: "TotalSegmentator",
+              link: "https://github.com/wasserth/TotalSegmentator",
+              icon: true,
+            },
+            {
+              name: "SurfaceToolbox",
+              link: "https://github.com/NA-MIC/SurfaceToolbox",
+              icon: true,
+            },
+            { name: ".NET", link: "https://dotnet.microsoft.com/", icon: true },
+            {
+              name: "Azure SQL",
+              link: "https://learn.microsoft.com/en-us/azure/azure-sql/",
+              icon: true,
+            },
+            { name: "REST APIs", link: "https://restfulapi.net/", icon: true },
+          ],
+        },
+        {
+          name: "micaalle.com",
+          description:
+            "Personal portfolio website showcasing my projects and skills.",
+          startDate: "01/2026",
+          endDate: "Present",
+          present: true,
+          link: "https://github.com/micaalleweb/micaalle.com",
+          skills: [
+            {
+              name: "JavaScript",
+              link: "https://www.javascript.com/",
+              icon: true,
+            },
+            {
+              name: "Bootstrap",
+              link: "https://getbootstrap.com/",
+              icon: true,
+            },
+            {
+              name: "HTML",
+              link: "https://developer.mozilla.org/en-US/docs/Web/HTML",
+              icon: true,
+            },
+            {
+              name: "CSS",
+              link: "https://developer.mozilla.org/en-US/docs/Web/CSS",
+              icon: true,
+            },
+          ],
+        },
+      ];
+
+      // Inject projects dynamically into HTML
+      const container = document.getElementById("projects-container");
+
+      projects.forEach((project) => {
+        const col = document.createElement("div");
+        col.className = "col-md-4 mb-4";
+
+        // Generate skills buttons HTML
+        const skillsHTML = project.skills
+          ? project.skills
+              .map(
+                (skill) => `
+            <span class="m-1 btn btn-dark btn-sm">
+              <a class="text-decoration-none text-white d-flex align-items-center justify-content-center" title="${skill.name}" href="${skill.link}" target="_blank">
+                ${skill.icon ? `<img src="/skills/svg/${encodeURIComponent(skill.name)}.svg" class="mx-1" height="16px" width="16px" alt="${skill.name} Icon" onerror="this.style.display = 'none'"/>` : ""}
+                ${skill.name}
+              </a>
+            </span>
+          `,
+              )
+              .join("")
+          : "";
+
+        col.innerHTML = `
+      <div class="card h-100 shadow-sm d-flex flex-column">
+        <div class="card-body d-flex flex-column align-items-center text-center">
+          <!-- Content at the top -->
+          <div>
+            <h5 class="card-title">${project.name}</h5>
+            <p class="card-text">${project.description}</p>
+            <p class="text-muted mb-2">
+              ${project.startDate} - ${project.present ? "Present" : project.endDate}
+            </p>
+            <div class="mt-2 d-flex flex-wrap justify-content-center">
+              ${skillsHTML}
+            </div>
+          </div>
+
+          <!-- Button always at bottom -->
+          <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
+        </div>
+      </div>
+    `;
+
+        container.appendChild(col);
+      });
+    </script>
 
     <!-- Bootstrap JS (for mobile menu) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
