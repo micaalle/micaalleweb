@@ -16,12 +16,12 @@
     <style>
       /* Global dark theme */
       body {
-        background-color: #121212; /* Dark charcoal */
-        color: #e5e7eb; /* Light gray text */
+        background-color: #121212;
+        color: #e5e7eb;
       }
 
       section {
-        scroll-margin-top: 90px; 
+        scroll-margin-top: 90px;
       }
 
       .section-title {
@@ -39,7 +39,7 @@
       }
 
       .nav-link:hover {
-        color: #198754 !important; 
+        color: #198754 !important;
       }
 
       /* Sections */
@@ -52,7 +52,7 @@
 
       /* Cards */
       .card {
-        background-color: #1e1e1e; 
+        background-color: #1e1e1e;
         border: 1px solid #2c2c2c;
         color: #e5e7eb;
       }
@@ -79,9 +79,9 @@
     <!-- ================= NAVBAR ================= -->
     <header class="fixed-top shadow-sm">
       <nav class="navbar navbar-expand-lg container">
-        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home"
-          >My Portfolio</a
-        >
+        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home">
+          My Portfolio
+        </a>
 
         <button
           class="navbar-toggler"
@@ -121,11 +121,22 @@
         id="Home"
         class="container-fluid min-vh-100 d-flex align-items-center"
       >
-        <div class="container text-center">
-          <h1 class="section-title text-success mb-4" style="color: #198754">
-            Welcome to My Portfolio
-          </h1>
-          <p class="lead text-muted">Hi! I’m Michael.</p>
+        <div class="container d-flex justify-content-center">
+          <div
+            class="card shadow-sm p-5 text-center"
+            style="max-width: 800px; width: 100%"
+          >
+            <h1 class="section-title mb-4" style="color: #198754">
+              Welcome to My Portfolio
+            </h1>
+            <p class="lead text-muted mb-4">Hi! I’m Michael.</p>
+            <div class="d-flex justify-content-center gap-3">
+              <a href="/resume.pdf" target="_blank" class="btn btn-success">
+                Resume
+              </a>
+              <a href="#About" class="btn btn-success"> About Me </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -197,7 +208,7 @@
       >
         <div class="container">
           <h2 class="section-title mb-4 text-center" style="color: #198754">
-            Contact
+            Contact Me
           </h2>
           <p class="fs-5 text-center">
             Email me at
@@ -206,6 +217,16 @@
             GitHub:
             <a href="https://github.com/micaalle" target="_blank"
               >github.com/micaalle</a
+            >
+            <br />
+            Linkedin:
+            <a href="https://www.linkedin.com/in/michaelbiskup" target="_blank"
+              >linkedin.com/in/michaelbiskup</a
+            >
+            <br />
+            Factorio Mod Page:
+            <a href="https://mods.factorio.com/user/micaalle" target="_blank"
+              >mods.factorio.com/user/micaalle</a
             >
           </p>
         </div>
