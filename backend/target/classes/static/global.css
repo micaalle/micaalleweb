@@ -1,0 +1,103 @@
+:root {
+    --themeColor: #191970;
+    --secondaryColor: #4141df;
+    --headerTextColor: #cde0ffe5;
+}
+
+#Logo {
+    height: 40px;
+    width: 40px;
+    border-radius: 55%;
+    outline: none;
+}
+
+.move_when_hovered {
+    transition: transform .2s ease 0s;
+    transform: translateY(8px);
+}
+
+.move_when_hovered:hover {
+    transform: translateY(0px);
+}
+
+.opaque_when_hovered {
+    transition: opacity .5s
+}
+
+.opaque_when_hovered:hover {
+    opacity: .7;
+}
+
+#BodyContainer {
+    margin-top: 70px;
+    /* Bootstrap bg-dark-subtle bg-gradient with dark theme */
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    background-color: #1a1d20 !important;
+}
+
+.HeaderTextColor {
+    color: var(--headerTextColor);
+}
+
+.ThemeColor {
+    background-color: var(--themeColor);
+}
+
+.SecondaryColor {
+    background-color: var(--secondaryColor);
+}
+
+.SecondaryColor:focus {
+    background-color: var(--secondaryColor);
+}
+
+.Rounded {
+    border-radius: 10px;
+}
+
+.ThemeToSecondaryGradient {
+    /* fallback for old browsers */
+    background: var(--themeColor);
+  
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #19197080, #4141df80);
+  
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #19197080, #4141df80)
+  }
+
+.LinkButton {
+    width: 50%;
+    height: 60px;
+    border: rgba(255, 255, 255, 0.651);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 15px;
+    background-color: var(--themeColor);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.NoDecoration {
+    text-decoration: none;
+    color: white;
+}
+
+#MessageInput {
+    height: 300px;
+}
+
+.SuccessMessage {
+    color: var(--bs-success);
+    display: none;
+}
+
+.ErrorMessage {
+    color: var(--bs-danger);
+    display: none;
+}

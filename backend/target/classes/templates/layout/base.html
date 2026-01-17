@@ -1,0 +1,15 @@
+/*<!-- src/main/resources/templates/layout/base.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Portfolio</title>
+</head>
+<body>
+    <!-- Navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Page content -->
+    <div th:replace="~{pages/home :: content}"></div>
+</body>
+</html>
