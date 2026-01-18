@@ -36,74 +36,56 @@ import lombok.Setter;
 @Table(name="projects", indexes = @Index(name = "date_order_ind", columnList = "date_order"))
 public class Project {
     
-    public static final String PROJECT_ID_ERROR = "Invalid 'id', project not found.";
-    public static final String PROJECT_NAME_ERROR = "'name' should be between 3-30 characters.";
-    public static final String PROJECT_DESCRIPTION_ERROR = "'description' should be between 10-250 characters.";
-    public static final String PROJECT_START_DATE_ERROR = "'startDate' should be in format 'MM/YYYY'.";
-    public static final String PROJECT_END_DATE_ERROR = "'endDate' should be in format 'MM/YYYY'.";
-    public static final String PROJECT_LINK_ERROR = "'link' should be between 7-250 characters and start with 'http://' or 'https://'.";
-    public static final String PROJECT_PRESENT_ERROR = "'present' should be true or false.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name", nullable = false)
-    @Size(min = 3, max = 30, message = PROJECT_NAME_ERROR)
-    @NotBlank(message = PROJECT_NAME_ERROR)
+    @Column(nullable = false)
+    @Size(min = 3, max = 30)
+    @NotBlank
     private String name;
 
-    @Column(name = "description", nullable = false)
-    @Size(min = 10, max = 250, message = PROJECT_DESCRIPTION_ERROR)
-    @NotBlank(message = PROJECT_DESCRIPTION_ERROR)
+    @Column(nullable = false)
+    @Size(min = 10, max = 250)
+    @NotBlank
     private String description;
 
-    @Column(name = "start_date", nullable = false)
-    @Pattern(regexp = "^(0[1-9]|1[0-2])/20[0-9]{2}$", message = PROJECT_START_DATE_ERROR)
-    @NotBlank(message = PROJECT_START_DATE_ERROR)
+    @Column(nullable = false)
+    @Pattern(regexp = "^(0[1-9]|1[0-2])/20[0-9]{2}$")
+    @NotBlank
     private String startDate;
 
-    @Column(name = "end_date", nullable = false)
-    @Pattern(regexp = "^(0[1-9]|1[0-2])/20[0-9]{2}$", message = PROJECT_END_DATE_ERROR)
-    @NotBlank(message = PROJECT_END_DATE_ERROR)
+    @Column(nullable = false)
+    @Pattern(regexp = "^(0[1-9]|1[0-2])/20[0-9]{2}$")
+    @NotBlank
     private String endDate;
 
-    @Column(name = "present", nullable = false)
-    @NotNull(message = PROJECT_PRESENT_ERROR)
+    @Column(nullable = false)
+    @NotNull
     private Boolean present;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    @Column(name = "date_order", nullable = false)
+    @Column(nullable = false)
     private String dateOrder;
 
-    @Column(name = "skills")
     @ManyToMany(mappedBy = "projects", fetch = FetchType.LAZY)
     @OrderBy("name ASC")
-    private final Set<Skill> skills = new HashSet<>();
+    private Set<Skill> skills = new HashSet<>();
 
-    @Column(name = "link", nullable = false)
-    @Size(min = 7, max = 250, message = PROJECT_LINK_ERROR)
-    @Pattern(regexp = "^(http|https):\\/\\/(.*)$", message = PROJECT_LINK_ERROR)
-    @NotBlank(message = PROJECT_LINK_ERROR)
+    @Column(nullable = false)
+    @Size(min = 7, max = 250)
+    @Pattern(regexp = "^(http|https):\\/\\/(.*)$")
+    @NotBlank
     private String link;
 
     public void createOrder() {
         String[] startSplit = this.startDate.split("/", 2);
         String[] endSplit = this.endDate.split("/", 2);
-        // EndYYYY+EndMM+present+StartYYYY+StartMM
-        this.dateOrder = endSplit[1]
-                        + endSplit[0]
-                        + ((this.present) ? "1" : "0")
-                        + startSplit[1]
-                        + startSplit[0];
+        this.dateOrder = endSplit[1] + endSplit[0] + (present ? "1" : "0") + startSplit[1] + startSplit[0];
     }
 
-    // Returns true if there was a change to the project's endDate.
     public boolean syncEndDate() {
         boolean changed = false;
-        if (this.present) {
+        if (present) {
             changed = !this.endDate.equals(DateFormat.MMyyyy());
             this.endDate = DateFormat.MMyyyy();
             createOrder();
@@ -121,3 +103,4 @@ public class Project {
         this.skills.remove(skill);
     }
 }
+
