@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.micaalle.entity.Project;
 
+@Repository
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
     @Query(value = "SELECT * FROM projects ORDER BY date_order DESC", nativeQuery = true)
     public List<Project> findAllOrderedByDate();
+
 }
