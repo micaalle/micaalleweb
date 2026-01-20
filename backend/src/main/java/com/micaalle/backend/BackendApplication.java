@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.micaalle.repository")
-#EntityScan("com.micaalle.entity")
+@EntityScan("com.micaalle.entity")
 	
 public class BackendApplication {
 
