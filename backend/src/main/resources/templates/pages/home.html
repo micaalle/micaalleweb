@@ -1,30 +1,77 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+
     <title>My Portfolio</title>
 
     <!-- Bootstrap -->
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Dark Mode Styles -->
     <style>
-      body { background-color: #121212; color: #e5e7eb; }
-      section { scroll-margin-top: 90px; }
-      .section-title { font-weight: 700; }
+      /* Global dark theme */
+      body {
+        background-color: #121212;
+        color: #e5e7eb;
+      }
 
-      header { background-color: #1a1a1a !important; }
-      .navbar-brand, .nav-link { color: #e5e7eb !important; }
-      .nav-link:hover { color: #198754 !important; }
+      section {
+        scroll-margin-top: 90px;
+      }
 
-      #Home, #Projects, #About, #Contact { background-color: #121212; }
+      .section-title {
+        font-weight: 700;
+      }
 
-      .card { background-color: #1e1e1e; border: 1px solid #2c2c2c; color: #e5e7eb; }
-      .card-title { color: #f8fafc; }
-      .text-muted { color: #94a3b8 !important; }
-      a { color: #198754; }
-      a:hover { color: #22c55e; }
+      /* Navbar */
+      header {
+        background-color: #1a1a1a !important;
+      }
+
+      .navbar-brand,
+      .nav-link {
+        color: #e5e7eb !important;
+      }
+
+      .nav-link:hover {
+        color: #198754 !important;
+      }
+
+      /* Sections */
+      #Home,
+      #Projects,
+      #About,
+      #Contact {
+        background-color: #121212;
+      }
+
+      /* Cards */
+      .card {
+        background-color: #1e1e1e;
+        border: 1px solid #2c2c2c;
+        color: #e5e7eb;
+      }
+
+      .card-title {
+        color: #f8fafc;
+      }
+
+      .text-muted {
+        color: #94a3b8 !important;
+      }
+
+      a {
+        color: #198754;
+      }
+
+      a:hover {
+        color: #22c55e;
+      }
     </style>
   </head>
 
@@ -32,16 +79,36 @@
     <!-- ================= NAVBAR ================= -->
     <header class="fixed-top shadow-sm">
       <nav class="navbar navbar-expand-lg container-fluid px-4">
-        <a class="navbar-brand fw-bold" href="#Home">My Portfolio</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home">
+          My Portfolio
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
           <ul class="navbar-nav">
-            <li class="nav-item mx-2"><a class="nav-link fw-semibold" href="#Home">Home</a></li>
-            <li class="nav-item mx-2"><a class="nav-link fw-semibold" href="#About">About</a></li>
-            <li class="nav-item mx-2"><a class="nav-link fw-semibold" href="#Projects">Projects</a></li>
-            <li class="nav-item mx-2"><a class="nav-link fw-semibold" href="#Contact">Contact</a></li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#Home">Home</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#About">About</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#Projects">Projects</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#Contact">Contact</a>
+            </li>
           </ul>
         </div>
       </nav>
@@ -49,15 +116,24 @@
 
     <!-- ================= MAIN CONTENT ================= -->
     <main class="mt-5 pt-5">
-
       <!-- ===== HOME ===== -->
-      <section id="Home" class="container-fluid min-vh-100 d-flex align-items-center">
+      <section
+        id="Home"
+        class="container-fluid min-vh-100 d-flex align-items-center"
+      >
         <div class="container d-flex justify-content-center">
-          <div class="card shadow-sm p-5 text-center" style="max-width: 800px; width: 100%">
-            <h1 class="section-title mb-4">Welcome to My Portfolio</h1>
+          <div
+            class="card shadow-sm p-5 text-center"
+            style="max-width: 800px; width: 100%"
+          >
+            <h1 class="section-title mb-4" style="color: #198754">
+              Welcome to My Portfolio
+            </h1>
             <p class="lead text-muted mb-4">Hi! I’m Michael.</p>
             <div class="d-flex justify-content-center gap-3">
-              <a th:href="@{/resume.pdf}" target="_blank" class="btn btn-success">Resume</a>
+              <a href="/resume.pdf" target="_blank" class="btn btn-success">
+                Resume
+              </a>
               <a href="#About" class="btn btn-success"> About Me </a>
             </div>
           </div>
@@ -65,12 +141,23 @@
       </section>
 
       <!-- ===== ABOUT ===== -->
-      <section id="About" class="container-fluid min-vh-100 d-flex align-items-center">
+      <section
+        id="About"
+        class="container-fluid min-vh-100 d-flex align-items-center"
+      >
         <div class="container d-flex justify-content-center">
           <div class="card shadow-sm p-4" style="max-width: 800px; width: 100%">
-            <h2 class="section-title mb-3 text-center">About Me</h2>
+            <h2 class="section-title mb-3 text-center" style="color: #198754">
+              About Me
+            </h2>
             <p class="text-muted fs-5 text-center">
-              I earned my Bachelor’s degree in Computer Science at the University of Central Florida, with a focus on Software Development. I have a strong interest in developing algorithms and data structures, which has significantly enhanced my programming abilities and problem-solving skills. I am fluent in several programming languages, including C++, C, C#, Java, TypeScript, JavaScript, HTML, Haskell, and Python.
+              I earned my Bachelor’s degree in Computer Science at the
+              University of Central Florida, with a focus on Software
+              Development. I have a strong interest in developing algorithms and
+              data structures, which has significantly enhanced my programming
+              abilities and problem-solving skills. I am fluent in several
+              programming languages, including C++, C, C#, Java, TypeScript,
+              JavaScript, HTML, Haskell, and Python.
             </p>
           </div>
         </div>
@@ -79,69 +166,122 @@
       <!-- ===== PROJECTS ===== -->
       <section id="Projects" class="container-fluid py-5">
         <div class="container">
-          <h2 class="section-title text-success mb-5 text-center">Projects</h2>
-          <div class="row g-4" id="projects-container"></div>
+          <h2
+            class="section-title text-success mb-5 text-center"
+            style="color: #198754"
+          >
+            Projects
+          </h2>
+
+          <div class="row g-4" id="projects-container">
+            <!-- Projects will be dynamically injected here -->
+          </div>
         </div>
       </section>
 
       <!-- ===== CONTACT ===== -->
-      <section id="Contact" class="container-fluid min-vh-100 d-flex align-items-center">
+      <section
+        id="Contact"
+        class="container-fluid min-vh-100 d-flex align-items-center"
+      >
         <div class="container">
-          <h2 class="section-title mb-4 text-center">Contact Me</h2>
+          <h2 class="section-title mb-4 text-center" style="color: #198754">
+            Contact Me
+          </h2>
           <p class="fs-5 text-center">
-            Email me at <a href="mailto:mbiskup2608@gmail.com">mbiskup2608@gmail.com</a><br/>
-            GitHub: <a href="https://github.com/micaalle" target="_blank">github.com/micaalle</a><br/>
-            Linkedin: <a href="https://www.linkedin.com/in/michaelbiskup" target="_blank">linkedin.com/in/michaelbiskup</a><br/>
-            Factorio Mod Page: <a href="https://mods.factorio.com/user/micaalle" target="_blank">mods.factorio.com/user/micaalle</a>
+            Email me at
+            <a href="mailto:mbiskup2608@gmail.com">mbiskup2608@gmail.com</a>
+            <br />
+            GitHub:
+            <a href="https://github.com/micaalle" target="_blank"
+              >github.com/micaalle</a
+            >
+            <br />
+            Linkedin:
+            <a href="https://www.linkedin.com/in/michaelbiskup" target="_blank"
+              >linkedin.com/in/michaelbiskup</a
+            >
+            <br />
+            Factorio Mod Page:
+            <a href="https://mods.factorio.com/user/micaalle" target="_blank"
+              >mods.factorio.com/user/micaalle</a
+            >
           </p>
         </div>
       </section>
     </main>
 
     <!-- ================= PROJECTS JS ================= -->
-    <script th:inline="javascript">
-      /*<![CDATA[*/
+    <script>
       const container = document.getElementById("projects-container");
 
-      fetch(/*[[@{/api/projects}]]*/)
-        .then(res => res.json())
-        .then(projects => {
-          projects.forEach(project => {
+      // Fetch projects from backend API
+      fetch("/api/projects")
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then((projects) => {
+          console.log("Projects fetched:", projects); // Debugging
+
+          projects.forEach((project) => {
             const col = document.createElement("div");
             col.className = "col-md-4 mb-4";
 
-            const skillsHTML = project.skills && project.skills.length > 0
-              ? project.skills.map(skill => `
-                  <span class="m-1 btn btn-dark btn-sm">
-                    <a class="text-decoration-none text-white" href="${skill.link || '#'}" target="_blank">
-                      ${skill.name}
-                    </a>
-                  </span>
-                `).join('')
-              : '';
+            // Generate skills HTML safely
+            const skillsHTML =
+              project.skills && project.skills.length > 0
+                ? project.skills
+                    .map((skill) => {
+                      const iconHTML = skill.icon
+                        ? `<img src="/skills/svg/${encodeURIComponent(
+                            skill.name
+                          )}.svg" 
+                            class="mx-1" height="16" width="16" 
+                            alt="${skill.name} Icon" 
+                            onerror="this.style.display='none'"/>`
+                        : "";
+                      const link = skill.link || "#";
+                      return `
+                        <span class="m-1 btn btn-dark btn-sm">
+                          <a class="text-decoration-none text-white d-flex align-items-center justify-content-center"
+                             title="${skill.name}" href="${link}" target="_blank">
+                            ${iconHTML}${skill.name}
+                          </a>
+                        </span>
+                      `;
+                    })
+                    .join("")
+                : "";
 
+            // Project card HTML
             col.innerHTML = `
               <div class="card h-100 shadow-sm d-flex flex-column">
                 <div class="card-body d-flex flex-column align-items-center text-center">
                   <div>
                     <h5 class="card-title">${project.name}</h5>
                     <p class="card-text">${project.description}</p>
-                    <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
-                    <div class="mt-2 d-flex flex-wrap justify-content-center">${skillsHTML}</div>
+                    <p class="text-muted mb-2">
+                      ${project.startDate} - ${project.present ? "Present" : project.endDate}
+                    </p>
+                    <div class="mt-2 d-flex flex-wrap justify-content-center">
+                      ${skillsHTML}
+                    </div>
                   </div>
                   <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
                 </div>
               </div>
             `;
+
             container.appendChild(col);
           });
         })
-        .catch(err => console.error("Error fetching projects:", err));
-      /*]]>*/
+        .catch((err) => console.error("Error fetching projects:", err));
     </script>
 
-    <!-- Bootstrap JS -->
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <!-- Bootstrap JS (for mobile menu) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
 
