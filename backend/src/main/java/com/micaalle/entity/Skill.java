@@ -1,8 +1,10 @@
+
 package com.micaalle.entity;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -41,5 +43,6 @@ public class Skill {
         inverseJoinColumns = @JoinColumn(name = "project_id")
     )
     @OrderBy("name ASC")
+    @JsonIgnore  
     private Set<Project> projects = new HashSet<>();
 }
