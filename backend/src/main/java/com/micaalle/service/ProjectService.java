@@ -20,7 +20,7 @@ public class ProjectService {
     }
 
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectRepository.findAllOrderedByDate();
     }
 
     public Optional<Project> getProjectById(Integer id) {
@@ -59,3 +59,4 @@ public class ProjectService {
         projectRepository.delete(project);
     }
 }
+
