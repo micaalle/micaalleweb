@@ -171,6 +171,30 @@
           </h2>
           <div class="row g-4" id="projects-container"></div>
         </div>
+
+        <div class="d-flex justify-content-center mt-4">
+  <button id="shuffle-skills" class="btn btn-success">Shuffle</button>
+</div>
+
+<script>
+  document.getElementById("shuffle-skills").addEventListener("click", () => {
+    document.querySelectorAll(".skills-container").forEach(container => {
+      const skills = Array.from(container.querySelectorAll(".skill"));
+      skills.forEach(skill => {
+        // Reset positions to random x at the top
+        const rect = skill.getBoundingClientRect();
+        skill.style.left = Math.random() * (container.clientWidth - rect.width) + "px";
+        skill.style.top = Math.random() * 20 + "px";
+
+        // Also reset velocity if physics is running
+        if (skill._physicsObj) {
+          skill._physicsObj.vx = 0;
+          skill._physicsObj.vy = 0;
+        }
+      });
+    });
+  });
+</script>
       </section>
 
       <section
