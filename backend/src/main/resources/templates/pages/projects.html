@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Projects | My Portfolio</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background-color: #121212;
+        color: #e5e7eb;
+      }
+
+      header {
+        background-color: #1a1a1a !important;
+      }
+
+      .navbar-brand,
+      .nav-link {
+        color: #e5e7eb !important;
+      }
+
+      .nav-link:hover {
+        color: #198754 !important;
+      }
+
+      .project-card {
+        background: #1e1e1e;
+        border-radius: 12px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+
+      .project-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .project-date {
+        font-size: 0.9rem;
+        color: #9ca3af;
+      }
+
+      .skills-container {
+        position: relative;
+        height: 220px;
+        background: #181818;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 16px;
+      }
+
+      .skill {
+        position: absolute;
+        padding: 8px 14px;
+        background: #198754;
+        color: #fff;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        cursor: grab;
+        user-select: none;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s ease-in;
+      }
+
+      footer {
+        color: #9ca3af;
+        font-size: 0.9rem;
+      }
+
+      /* Falling animation for main content */
+      #mainContent {
+        transform: translateY(-100vh);
+        opacity: 0;
+        transition:
+          transform 0.8s ease-out,
+          opacity 0.8s ease-out;
+      }
+      #mainContent.visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <header class="fixed-top shadow-sm">
+      <nav class="navbar navbar-expand-lg container-fluid px-4">
+        <a class="navbar-brand fw-bold" style="color: #198754" href="/">
+          My Portfolio
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="/">Home</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="/about">About</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="/projects">Projects</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="/links">Links</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="/contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Content -->
+    <main class="container pt-5" style="margin-top: 15vh" id="mainContent">
+      <h1 class="mb-4">Projects</h1>
+
+      <!-- Row where project cards will be inserted dynamically -->
+      <div class="row g-4" id="projects-container"></div>
+
+      <!-- Physics toggle button under projects -->
+      <div class="text-center my-4">
+        <button id="physicsToggle" class="btn btn-success">
+          Switch to Floating
+        </button>
+      </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function initSkillsPhysics() {
+        const toggleBtn = document.getElementById("physicsToggle");
+        let mode = "gravity"; // default mode
+
+        toggleBtn.addEventListener("click", () => {
+          mode = mode === "gravity" ? "floating" : "gravity";
+          toggleBtn.textContent =
+            mode === "gravity" ? "Switch to Floating" : "Switch to Gravity";
+
+          // Reset velocities when switching modes
+          document
+            .querySelectorAll(".skills-container")
+            .forEach((container) => {
+              const skills = Array.from(container.querySelectorAll(".skill"));
+              skills.forEach((skill) => {
+                if (skill._physicsObj) {
+                  if (mode === "gravity") {
+                    skill._physicsObj.vx = 0;
+                    skill._physicsObj.vy = 0;
+                  } else if (mode === "floating") {
+                    skill._physicsObj.vx = (Math.random() - 0.5) * 1.5;
+                    skill._physicsObj.vy = (Math.random() - 0.5) * 1.5;
+                  }
+                }
+              });
+            });
+        });
+
+        document.querySelectorAll(".skills-container").forEach((container) => {
+          const skills = Array.from(container.querySelectorAll(".skill"));
+          const objects = skills.map((skill) => {
+            const rect = skill.getBoundingClientRect();
+            const obj = {
+              el: skill,
+              x: Math.random() * (container.clientWidth - rect.width),
+              y: -Math.random() * 300,
+              w: rect.width,
+              h: rect.height,
+              vx: mode === "floating" ? (Math.random() - 0.5) * 1.5 : 0,
+              vy: mode === "floating" ? (Math.random() - 0.5) * 1.5 : 0,
+              dragging: false,
+            };
+            skill._physicsObj = obj; // store reference for toggle
+
+            // make visible
+            skill.style.opacity = 1;
+
+            return obj;
+          });
+
+          const bounce = 0.5;
+
+          objects.forEach((obj) => {
+            obj.el.addEventListener("mousedown", (e) => {
+              obj.dragging = true;
+              const offsetX =
+                e.clientX - obj.x - container.getBoundingClientRect().left;
+              const offsetY =
+                e.clientY - obj.y - container.getBoundingClientRect().top;
+
+              const move = (e) => {
+                obj.x =
+                  e.clientX - offsetX - container.getBoundingClientRect().left;
+                obj.y =
+                  e.clientY - offsetY - container.getBoundingClientRect().top;
+                obj.vx = 0;
+                obj.vy = 0;
+              };
+
+              const up = () => {
+                obj.dragging = false;
+                window.removeEventListener("mousemove", move);
+                window.removeEventListener("mouseup", up);
+              };
+
+              window.addEventListener("mousemove", move);
+              window.addEventListener("mouseup", up);
+            });
+          });
+
+          function updateDimensions(obj) {
+            const rect = obj.el.getBoundingClientRect();
+            obj.w = rect.width;
+            obj.h = rect.height;
+          }
+
+          function update() {
+            objects.forEach(updateDimensions);
+
+            objects.forEach((a) => {
+              if (!a.dragging) {
+                if (mode === "gravity") {
+                  a.vx = 0;
+                  a.vy += 0.5;
+                } else if (mode === "floating") {
+                  a.vx += (Math.random() - 0.5) * 0.05;
+                  a.vy += (Math.random() - 0.5) * 0.05;
+                  const maxV = 2;
+                  a.vx = Math.max(Math.min(a.vx, maxV), -maxV);
+                  a.vy = Math.max(Math.min(a.vy, maxV), -maxV);
+                }
+
+                a.x += a.vx;
+                a.y += a.vy;
+
+                if (a.x < 0) {
+                  a.x = 0;
+                  a.vx *= -bounce;
+                }
+                if (a.x + a.w > container.clientWidth) {
+                  a.x = container.clientWidth - a.w;
+                  a.vx *= -bounce;
+                }
+                if (a.y < 0) {
+                  a.y = 0;
+                  a.vy *= -bounce;
+                }
+                if (a.y + a.h > container.clientHeight) {
+                  a.y = container.clientHeight - a.h;
+                  a.vy *= -bounce;
+                }
+              }
+            });
+
+            for (let i = 0; i < objects.length; i++) {
+              for (let j = i + 1; j < objects.length; j++) {
+                const a = objects[i],
+                  b = objects[j];
+                const dx = a.x + a.w / 2 - (b.x + b.w / 2);
+                const dy = a.y + a.h / 2 - (b.y + b.h / 2);
+                const overlapX = (a.w + b.w) / 2 - Math.abs(dx);
+                const overlapY = (a.h + b.h) / 2 - Math.abs(dy);
+
+                if (overlapX > 0 && overlapY > 0) {
+                  if (overlapX < overlapY) {
+                    const sign = dx > 0 ? 1 : -1;
+                    a.x += (overlapX / 2) * sign;
+                    b.x -= (overlapX / 2) * sign;
+                    a.vx *= -bounce;
+                    b.vx *= -bounce;
+                  } else {
+                    const sign = dy > 0 ? 1 : -1;
+                    a.y += (overlapY / 2) * sign;
+                    b.y -= (overlapY / 2) * sign;
+                    a.vy *= -bounce;
+                    b.vy *= -bounce;
+                  }
+                }
+              }
+            }
+
+            objects.forEach((obj) => {
+              obj.el.style.left = obj.x + "px";
+              obj.el.style.top = obj.y + "px";
+            });
+
+            requestAnimationFrame(update);
+          }
+
+          update();
+        });
+      }
+
+      window.addEventListener("load", () => {
+        const mainContent = document.getElementById("mainContent");
+        setTimeout(() => mainContent.classList.add("visible"), 100);
+
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const target = e.target.getAttribute("href");
+
+            document
+              .querySelectorAll(".skills-container")
+              .forEach((container) => {
+                container.querySelectorAll(".skill").forEach((skill) => {
+                  if (skill._physicsObj)
+                    skill._physicsObj.vy += 20 + Math.random() * 10;
+                });
+              });
+
+            document.body.style.overflow = "hidden";
+            mainContent.style.transform = "translateY(200vh)";
+            mainContent.style.opacity = 0;
+
+            setTimeout(() => (window.location.href = target), 500);
+          });
+        });
+
+        const container = document.getElementById("projects-container");
+        if (container) {
+          fetch("/api/projects")
+            .then((res) =>
+              res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`),
+            )
+            .then((projects) => {
+              projects.forEach((project) => {
+                const col = document.createElement("div");
+                col.className = "col-lg-4 col-md-6";
+
+                const skillsHTML =
+                  project.skills
+                    ?.map((s) => `<div class="skill">${s.name}</div>`)
+                    .join("") || "";
+
+                col.innerHTML = `
+              <div class="project-card d-flex flex-column h-100">
+                <div class="project-title">${project.name}</div>
+                <div class="project-date">${project.startDate} - ${project.present ? "Present" : project.endDate}</div>
+                <p class="mt-2">${project.description}</p>
+                <div class="skills-container">${skillsHTML}</div>
+                ${project.link ? `<a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>` : ""}
+              </div>
+            `;
+                container.appendChild(col);
+              });
+
+              initSkillsPhysics();
+            })
+            .catch((err) => console.error("Failed to load projects:", err));
+        }
+
+        const animationDuration = 800;
+        setTimeout(() => initSkillsPhysics(), animationDuration + 100);
+      });
+    </script>
+  </body>
+</html>
