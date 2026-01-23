@@ -1,219 +1,258 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>My Portfolio</title>
 
-    <title>My Portfolio</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
 
-    <!-- Bootstrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+  <style>
+    body {
+      background-color: #121212;
+      color: #e5e7eb;
+    }
 
-    <!-- Dark Mode Styles -->
-    <style>
-      body {
-        background-color: #121212;
-        color: #e5e7eb;
-      }
+    section {
+      scroll-margin-top: 90px;
+    }
 
-      section {
-        scroll-margin-top: 90px;
-      }
+    header {
+      background-color: #1a1a1a !important;
+    }
 
-      .section-title {
-        font-weight: 700;
-      }
+    .navbar-brand,
+    .nav-link {
+      color: #e5e7eb !important;
+    }
 
-      header {
-        background-color: #1a1a1a !important;
-      }
+    .nav-link:hover {
+      color: #198754 !important;
+    }
 
-      .navbar-brand,
-      .nav-link {
-        color: #e5e7eb !important;
-      }
+    .card {
+      background-color: #1e1e1e;
+      border: 1px solid #2c2c2c;
+      color: #e5e7eb;
+    }
 
-      .nav-link:hover {
-        color: #198754 !important;
-      }
+    .card-title {
+      color: #f8fafc;
+    }
 
-      #Home,
-      #Projects,
-      #About,
-      #Contact {
-        background-color: #121212;
-      }
+    .text-muted {
+      color: #94a3b8 !important;
+    }
 
-      .card {
-        background-color: #1e1e1e;
-        border: 1px solid #2c2c2c;
-        color: #e5e7eb;
-      }
+    a {
+      color: #198754;
+    }
 
-      .card-title {
-        color: #f8fafc;
-      }
+    a:hover {
+      color: #22c55e;
+    }
 
-      .text-muted {
-        color: #94a3b8 !important;
-      }
+    /* ===== GRAVITY ADDITIONS ===== */
 
-      a {
-        color: #198754;
-      }
+    .skills-container {
+      position: relative;
+      min-height: 90px;
+    }
 
-      a:hover {
-        color: #22c55e;
-      }
+    .skill {
+      position: absolute;
+      user-select: none;
+      cursor: grab;
+    }
 
-      /* ===== GRAVITY ADDITIONS (MINIMAL) ===== */
+    .skill.dragging {
+      cursor: grabbing;
+      z-index: 10;
+    }
+  </style>
+</head>
 
-      .skills-container {
-        position: relative;
-        min-height: 80px; /* prevents collapse */
-      }
+<body>
+<header class="fixed-top shadow-sm">
+  <nav class="navbar navbar-expand-lg container-fluid px-4">
+    <a class="navbar-brand fw-bold" style="color:#198754" href="#Home">
+      My Portfolio
+    </a>
+  </nav>
+</header>
 
-      .skill {
-        position: absolute;
-        user-select: none;
-        cursor: grab;
-      }
-    </style>
-  </head>
+<main class="mt-5 pt-5">
+  <section id="Projects" class="container-fluid py-5">
+    <div class="container">
+      <h2 class="section-title text-success mb-5 text-center">Projects</h2>
+      <div class="row g-4" id="projects-container"></div>
+    </div>
+  </section>
+</main>
 
-  <body>
-    <!-- ================= NAVBAR ================= -->
-    <header class="fixed-top shadow-sm">
-      <nav class="navbar navbar-expand-lg container-fluid px-4">
-        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home">
-          My Portfolio
-        </a>
-      </nav>
-    </header>
+<script>
+const container = document.getElementById("projects-container");
 
-    <main class="mt-5 pt-5">
-      <!-- ===== PROJECTS ===== -->
-      <section id="Projects" class="container-fluid py-5">
-        <div class="container">
-          <h2 class="section-title text-success mb-5 text-center">
-            Projects
-          </h2>
+fetch("/api/projects")
+  .then(res => res.json())
+  .then(projects => {
+    projects.forEach(project => {
+      const col = document.createElement("div");
+      col.className = "col-md-4 mb-4";
 
-          <div class="row g-4" id="projects-container"></div>
-        </div>
-      </section>
-    </main>
+      const skillsHTML = project.skills?.map(skill => `
+        <span class="m-1 btn btn-dark btn-sm skill">
+          <a class="text-decoration-none text-white d-flex align-items-center justify-content-center"
+             href="${skill.link || "#"}" target="_blank">
+            ${skill.name}
+          </a>
+        </span>
+      `).join("") || "";
 
-    <!-- ================= PROJECTS JS ================= -->
-    <script>
-      const container = document.getElementById("projects-container");
-
-      fetch("/api/projects")
-        .then(res => {
-          if (!res.ok) throw new Error(res.status);
-          return res.json();
-        })
-        .then(projects => {
-          projects.forEach(project => {
-            const col = document.createElement("div");
-            col.className = "col-md-4 mb-4";
-
-            const skillsHTML =
-              project.skills && project.skills.length
-                ? project.skills.map(skill => {
-                    const iconHTML = skill.icon
-                      ? `<img src="/skills/svg/${encodeURIComponent(skill.name)}.svg"
-                          class="mx-1" height="16" width="16"
-                          onerror="this.style.display='none'"/>`
-                      : "";
-                    return `
-                      <span class="m-1 btn btn-dark btn-sm skill">
-                        <a class="text-decoration-none text-white d-flex align-items-center justify-content-center"
-                           href="${skill.link || "#"}"
-                           target="_blank">
-                          ${iconHTML}${skill.name}
-                        </a>
-                      </span>`;
-                  }).join("")
-                : "";
-
-            col.innerHTML = `
-              <div class="card h-100 shadow-sm d-flex flex-column">
-                <div class="card-body d-flex flex-column align-items-center text-center">
-                  <div>
-                    <h5 class="card-title">${project.name}</h5>
-                    <p class="card-text">${project.description}</p>
-                    <p class="text-muted mb-2">
-                      ${project.startDate} - ${project.present ? "Present" : project.endDate}
-                    </p>
-                    <div class="mt-2 d-flex flex-wrap justify-content-center skills-container">
-                      ${skillsHTML}
-                    </div>
-                  </div>
-                  <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">
-                    View Project
-                  </a>
-                </div>
+      col.innerHTML = `
+        <div class="card h-100 shadow-sm d-flex flex-column">
+          <div class="card-body d-flex flex-column align-items-center text-center">
+            <div>
+              <h5 class="card-title">${project.name}</h5>
+              <p class="card-text">${project.description}</p>
+              <p class="text-muted mb-2">
+                ${project.startDate} - ${project.present ? "Present" : project.endDate}
+              </p>
+              <div class="mt-2 d-flex flex-wrap justify-content-center skills-container">
+                ${skillsHTML}
               </div>
-            `;
+            </div>
+            <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">
+              View Project
+            </a>
+          </div>
+        </div>
+      `;
 
-            container.appendChild(col);
-            applySkillGravity(col.querySelector(".skills-container"));
-          });
-        });
+      container.appendChild(col);
+      enableSkillPhysics(col.querySelector(".skills-container"));
+    });
+  });
 
-      function applySkillGravity(container) {
-        const skills = Array.from(container.querySelectorAll(".skill"));
-        if (!skills.length) return;
+function enableSkillPhysics(container) {
+  const skills = Array.from(container.querySelectorAll(".skill"));
+  if (!skills.length) return;
 
-        const containerRect = container.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
 
-        const bodies = skills.map(el => {
-          const r = el.getBoundingClientRect();
-          const x = r.left - containerRect.left;
-          const y = r.top - containerRect.top;
+  const bodies = skills.map(el => {
+    const r = el.getBoundingClientRect();
+    const x = r.left - containerRect.left;
+    const y = r.top - containerRect.top;
 
-          el.style.left = `${x}px`;
-          el.style.top = `${y}px`;
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
 
-          return {
-            el,
-            x,
-            y,
-            vy: 0,
-            w: r.width,
-            h: r.height
-          };
-        });
+    return {
+      el,
+      x,
+      y,
+      vx: 0,
+      vy: 0,
+      w: r.width,
+      h: r.height,
+      dragging: false
+    };
+  });
 
-        const GRAVITY = 0.4;
-        const FLOOR = container.clientHeight;
+  const GRAVITY = 0.45;
+  const FLOOR = container.clientHeight;
 
-        function tick() {
-          bodies.forEach(b => {
-            b.vy += GRAVITY;
-            b.y += b.vy;
+  /* --- Dragging --- */
+  let active = null;
 
-            if (b.y + b.h > FLOOR) {
-              b.y = FLOOR - b.h;
-              b.vy *= -0.25;
-            }
+  container.addEventListener("mousedown", e => {
+    const body = bodies.find(b =>
+      e.target.closest(".skill") === b.el
+    );
+    if (!body) return;
 
-            b.el.style.transform = `translate(${b.x}px, ${b.y}px)`;
-          });
+    active = body;
+    body.dragging = true;
+    body.vx = body.vy = 0;
+    body.el.classList.add("dragging");
+  });
 
-          requestAnimationFrame(tick);
+  window.addEventListener("mousemove", e => {
+    if (!active) return;
+    const rect = container.getBoundingClientRect();
+    active.x = e.clientX - rect.left - active.w / 2;
+    active.y = e.clientY - rect.top - active.h / 2;
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (active) {
+      active.dragging = false;
+      active.el.classList.remove("dragging");
+    }
+    active = null;
+  });
+
+  /* --- Collision detection --- */
+  function collide(a, b) {
+    return (
+      a.x < b.x + b.w &&
+      a.x + a.w > b.x &&
+      a.y < b.y + b.h &&
+      a.y + a.h > b.y
+    );
+  }
+
+  function resolveCollisions() {
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = i + 1; j < bodies.length; j++) {
+        const a = bodies[i];
+        const b = bodies[j];
+        if (!collide(a, b)) continue;
+
+        if (a.y < b.y) {
+          a.y = b.y - a.h;
+          a.vy = 0;
+        } else {
+          b.y = a.y - b.h;
+          b.vy = 0;
         }
-
-        tick();
       }
-    </script>
+    }
+  }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+  function tick() {
+    bodies.forEach(b => {
+      if (!b.dragging) {
+        b.vy += GRAVITY;
+        b.y += b.vy;
+      }
+
+      if (b.y + b.h > FLOOR) {
+        b.y = FLOOR - b.h;
+        b.vy = 0;
+      }
+
+      b.x = Math.max(0, Math.min(b.x, container.clientWidth - b.w));
+    });
+
+    resolveCollisions();
+
+    bodies.forEach(b => {
+      b.el.style.transform = `translate(${b.x}px, ${b.y}px)`;
+    });
+
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
-
 
