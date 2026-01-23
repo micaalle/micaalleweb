@@ -53,12 +53,18 @@
       a:hover {
         color: #22c55e;
       }
+
+      /* Skills container and skill boxes */
       .skills-container {
         position: relative;
         width: 100%;
-        height: 120px;
+        min-height: 120px; /* minimum size */
+        height: auto; /* allow dynamic growth */
+        max-height: 400px; /* optional max */
         overflow: hidden;
+        margin-top: 0.5rem;
       }
+
       .skill {
         position: absolute;
         cursor: grab;
@@ -66,7 +72,9 @@
         padding: 2px 6px;
         background: #2a2a2a;
         border-radius: 4px;
+        white-space: nowrap;
       }
+
       .skill.dragging {
         cursor: grabbing;
       }
@@ -240,12 +248,14 @@
           projects.forEach((project) => {
             const col = document.createElement("div");
             col.className = "col-md-4 mb-4";
+
             const skillsHTML =
               project.skills && project.skills.length > 0
                 ? project.skills
                     .map((s) => `<div class="skill">${s.name}</div>`)
                     .join("")
                 : "";
+
             col.innerHTML = `
         <div class="card h-100 shadow-sm d-flex flex-column">
           <div class="card-body d-flex flex-column align-items-center text-center">
@@ -253,7 +263,7 @@
               <h5 class="card-title">${project.name}</h5>
               <p class="card-text">${project.description}</p>
               <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
-              <div class="mt-2 d-flex flex-wrap justify-content-center skills-container">${skillsHTML}</div>
+              <div class="skills-container">${skillsHTML}</div>
             </div>
             <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
           </div>
@@ -266,7 +276,7 @@
         })
         .catch((err) => console.error("Error fetching projects:", err));
 
-      // Physics engine for skills
+      // Physics engine for skills (colliding, gravity)
       function initPhysics() {
         document.querySelectorAll(".skills-container").forEach((container) => {
           const skills = Array.from(container.querySelectorAll(".skill"));
@@ -308,6 +318,7 @@
           });
 
           function update() {
+            // Apply gravity
             for (let i = 0; i < objects.length; i++) {
               const a = objects[i];
               if (!a.dragging) {
@@ -332,14 +343,18 @@
                 }
               }
             }
-            // Collisions
+
+            // Collisions between skills
             for (let i = 0; i < objects.length; i++) {
               for (let j = i + 1; j < objects.length; j++) {
                 const a = objects[i],
                   b = objects[j];
                 const dx = a.x - b.x,
                   dy = a.y - b.y;
-                if (dx * dx + dy * dy < ((a.w + b.w) / 2) ** 2) {
+                if (
+                  Math.abs(dx) < (a.w + b.w) / 2 &&
+                  Math.abs(dy) < (a.h + b.h) / 2
+                ) {
                   if (a.dragging || b.dragging) continue;
                   const overlapX = a.w / 2 + b.w / 2 - Math.abs(dx);
                   const overlapY = a.h / 2 + b.h / 2 - Math.abs(dy);
@@ -369,12 +384,16 @@
                 }
               }
             }
+
+            // Update DOM
             objects.forEach((obj) => {
               obj.el.style.left = obj.x + "px";
               obj.el.style.top = obj.y + "px";
             });
+
             requestAnimationFrame(update);
           }
+
           update();
         });
       }
@@ -383,3 +402,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
