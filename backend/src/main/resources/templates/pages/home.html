@@ -60,7 +60,6 @@
         width: 100%;
         min-height: 120px; /* minimum size */
         height: auto; /* allow dynamic growth */
-        max-height: 400px; /* optional max */
         overflow: hidden;
         margin-top: 0.5rem;
       }
@@ -236,7 +235,6 @@
     </main>
 
     <script>
-      // Fetch projects from backend API
       const container = document.getElementById("projects-container");
 
       fetch("/api/projects")
@@ -271,12 +269,11 @@
             container.appendChild(col);
           });
 
-          // Initialize physics after DOM is ready
           initPhysics();
         })
         .catch((err) => console.error("Error fetching projects:", err));
 
-      // Physics engine for skills (colliding, gravity)
+      // Physics engine for skills with auto-growing container
       function initPhysics() {
         document.querySelectorAll(".skills-container").forEach((container) => {
           const skills = Array.from(container.querySelectorAll(".skill"));
@@ -288,6 +285,7 @@
             h: skill.offsetHeight,
             vx: 0,
             vy: 0,
+            dragging: false,
           }));
 
           const gravity = 0.5;
@@ -318,7 +316,7 @@
           });
 
           function update() {
-            // Apply gravity
+            // Gravity & movement
             for (let i = 0; i < objects.length; i++) {
               const a = objects[i];
               if (!a.dragging) {
@@ -337,14 +335,11 @@
                   a.y = 0;
                   a.vy *= -bounce;
                 }
-                if (a.y + a.h > container.clientHeight) {
-                  a.y = container.clientHeight - a.h;
-                  a.vy *= -bounce;
-                }
+                // container height grows automatically
               }
             }
 
-            // Collisions between skills
+            // Collisions
             for (let i = 0; i < objects.length; i++) {
               for (let j = i + 1; j < objects.length; j++) {
                 const a = objects[i],
@@ -391,6 +386,13 @@
               obj.el.style.top = obj.y + "px";
             });
 
+            // Dynamically grow container height to fit lowest skill
+            let maxY = 0;
+            objects.forEach((obj) => {
+              maxY = Math.max(maxY, obj.y + obj.h);
+            });
+            container.style.height = Math.max(maxY + 10, 120) + "px";
+
             requestAnimationFrame(update);
           }
 
@@ -402,4 +404,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
 
