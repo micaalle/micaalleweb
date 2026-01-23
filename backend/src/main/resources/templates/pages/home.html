@@ -173,27 +173,35 @@
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-  <button id="shuffle-skills" class="btn btn-success">Shuffle</button>
+  <button id="shuffle-skills" class="btn btn-success">Shuffle Skills</button>
 </div>
 
 <script>
-  document.getElementById("shuffle-skills").addEventListener("click", () => {
+  // Run this AFTER skills are initialized
+  function shuffleSkills() {
     document.querySelectorAll(".skills-container").forEach(container => {
       const skills = Array.from(container.querySelectorAll(".skill"));
-      skills.forEach(skill => {
-        // Reset positions to random x at the top
-        const rect = skill.getBoundingClientRect();
-        skill.style.left = Math.random() * (container.clientWidth - rect.width) + "px";
-        skill.style.top = Math.random() * 20 + "px";
 
-        // Also reset velocity if physics is running
-        if (skill._physicsObj) {
-          skill._physicsObj.vx = 0;
-          skill._physicsObj.vy = 0;
+      skills.forEach(skill => {
+        // Get its physics object if you have it stored in your initSkillsPhysics
+        const obj = skill._physicsObj;
+
+        if (obj) {
+          // Random horizontal position
+          obj.x = Math.random() * (container.clientWidth - obj.w);
+          obj.y = Math.random() * 20; // start near top
+          obj.vx = 0;
+          obj.vy = 0;
         }
+
+        // Update DOM immediately (so it doesn't wait for next frame)
+        skill.style.left = (obj ? obj.x : Math.random() * (container.clientWidth - skill.offsetWidth)) + "px";
+        skill.style.top = (obj ? obj.y : "0px");
       });
     });
-  });
+  }
+
+  document.getElementById("shuffle-skills").addEventListener("click", shuffleSkills);
 </script>
       </section>
 
