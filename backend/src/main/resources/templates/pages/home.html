@@ -57,7 +57,6 @@
       .skills-container {
         position: relative;
         width: 100%;
-        min-height: 200px;
         overflow: hidden;
         margin-top: 0.5rem;
       }
@@ -266,6 +265,14 @@
 
       function initSkillsPhysics() {
         document.querySelectorAll(".skills-container").forEach((container) => {
+          const button = container.closest(".card-body").querySelector("a.btn");
+
+          // Expand skills container to reach just above button
+          const containerRect = container.getBoundingClientRect();
+          const buttonRect = button.getBoundingClientRect();
+          const dynamicHeight = buttonRect.top - containerRect.top - 5;
+          container.style.height = dynamicHeight + "px";
+
           const skills = Array.from(container.querySelectorAll(".skill"));
           const objects = skills.map((skill) => {
             const rect = skill.getBoundingClientRect();
@@ -284,7 +291,6 @@
           const gravity = 0.5;
           const bounce = 0.6;
 
-          // Drag
           objects.forEach((obj) => {
             obj.el.addEventListener("mousedown", (e) => {
               obj.dragging = true;
@@ -320,15 +326,16 @@
           }
 
           function update() {
-            // Update hitboxes dynamically
             objects.forEach(updateDimensions);
 
-            // Gravity & move
             objects.forEach((a) => {
               if (!a.dragging) {
                 a.vy += gravity;
                 a.x += a.vx;
                 a.y += a.vy;
+
+                // Dynamic floor
+                const floor = container.clientHeight;
 
                 if (a.x < 0) {
                   a.x = 0;
@@ -342,14 +349,14 @@
                   a.y = 0;
                   a.vy *= -bounce;
                 }
-                if (a.y + a.h > container.clientHeight) {
-                  a.y = container.clientHeight - a.h;
+                if (a.y + a.h > floor) {
+                  a.y = floor - a.h;
                   a.vy *= -bounce;
                 }
               }
             });
 
-            // Collision between skills
+            // Collision
             for (let i = 0; i < objects.length; i++) {
               for (let j = i + 1; j < objects.length; j++) {
                 const a = objects[i],
@@ -377,7 +384,6 @@
               }
             }
 
-            // Apply to DOM
             objects.forEach((obj) => {
               obj.el.style.left = obj.x + "px";
               obj.el.style.top = obj.y + "px";
