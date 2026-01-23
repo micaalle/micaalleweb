@@ -1,155 +1,309 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width" />
-<title>Portfolio with Interactive Skills</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>My Portfolio</title>
 
-<style>
-body {
-  background-color: #121212;
-  color: #e5e7eb;
-}
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-.card {
-  background-color: #1e1e1e;
-  border: 1px solid #2c2c2c;
-  position: relative; /* for dragging container */
-}
+    <!-- Dark Mode Styles -->
+    <style>
+      /* Global dark theme */
+      body {
+        background-color: #121212;
+        color: #e5e7eb;
+      }
 
-.skills-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.3rem;
-  margin-top: 0.5rem;
-  position: relative;
-  min-height: 50px; /* reserve space */
-}
+      section {
+        scroll-margin-top: 90px;
+      }
 
-.skill-btn {
-  display: inline-block;
-  position: relative; /* default position */
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
-}
-.skill-btn.dragging {
-  cursor: grabbing;
-  z-index: 10;
-}
-</style>
-</head>
-<body>
+      .section-title {
+        font-weight: 700;
+      }
 
-<main class="container mt-5">
-  <h2 class="text-center text-success mb-4">Projects</h2>
-  <div class="row g-4" id="projects-container"></div>
-</main>
+      /* Navbar */
+      header {
+        background-color: #1a1a1a !important;
+      }
 
-<script>
-const container = document.getElementById("projects-container");
+      .navbar-brand,
+      .nav-link {
+        color: #e5e7eb !important;
+      }
 
-// Fetch projects from backend
-fetch("/api/projects")
-  .then(res => res.json())
-  .then(projects => {
-    projects.forEach(project => {
-      const col = document.createElement("div");
-      col.className = "col-md-4 mb-4";
+      .nav-link:hover {
+        color: #198754 !important;
+      }
 
-      const skillsHTML = project.skills?.map(skill => `
-        <span class="btn btn-dark btn-sm skill-btn" title="${skill.name}">
-          <a href="${skill.link || "#"}" target="_blank" class="text-decoration-none text-white d-flex align-items-center justify-content-center">${skill.name}</a>
-        </span>
-      `).join("") || "";
+      /* Sections */
+      #Home,
+      #Projects,
+      #About,
+      #Contact {
+        background-color: #121212;
+      }
 
-      col.innerHTML = `
-        <div class="card h-100 shadow-sm d-flex flex-column">
-          <div class="card-body d-flex flex-column text-center">
-            <h5 class="card-title">${project.name}</h5>
-            <p class="card-text">${project.description}</p>
-            <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
+      /* Cards */
+      .card {
+        background-color: #1e1e1e;
+        border: 1px solid #2c2c2c;
+        color: #e5e7eb;
+      }
 
-            <div class="skills-container">
-              ${skillsHTML}
+      .card-title {
+        color: #f8fafc;
+      }
+
+      .text-muted {
+        color: #94a3b8 !important;
+      }
+
+      a {
+        color: #198754;
+      }
+
+      a:hover {
+        color: #22c55e;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ================= NAVBAR ================= -->
+    <header class="fixed-top shadow-sm">
+      <nav class="navbar navbar-expand-lg container-fluid px-4">
+        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home">
+          My Portfolio
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#Home">Home</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#About">About</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#Projects">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-semibold" href="#Links">Links</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link fw-semibold" href="#Contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="mt-5 pt-5">
+      <!-- ===== HOME ===== -->
+      <section
+        id="Home"
+        class="container-fluid min-vh-100 d-flex align-items-center"
+      >
+        <div class="container d-flex justify-content-center">
+          <div
+            class="card shadow-sm p-5 text-center"
+            style="max-width: 800px; width: 100%"
+          >
+            <h1 class="section-title mb-4" style="color: #198754">
+              Welcome to My Portfolio
+            </h1>
+            <p class="lead text-muted mb-4">Hi! I’m Michael.</p>
+            <div class="d-flex justify-content-center gap-3">
+              <a href="/Michael_Biskup_Resume.pdf" target="_blank" class="btn btn-success">
+                Resume
+              </a>
+              <a href="#About" class="btn btn-success"> About Me </a>
             </div>
-
-            <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
           </div>
         </div>
-      `;
-      container.appendChild(col);
+      </section>
 
-      // Enable interactive gravity on drag
-      const skillsContainer = col.querySelector(".skills-container");
-      enableGravity(skillsContainer);
-    });
-  });
+      <!-- ===== ABOUT ===== -->
+      <section
+        id="About"
+        class="container-fluid min-vh-100 d-flex align-items-center"
+      >
+        <div class="container d-flex justify-content-center">
+          <div class="card shadow-sm p-4" style="max-width: 800px; width: 100%">
+            <h2 class="section-title mb-3 text-center" style="color: #198754">
+              About Me
+            </h2>
+            <p class="text-muted fs-5 text-center">
+              I earned my Bachelor’s degree in Computer Science at the
+              University of Central Florida, with a focus on Software
+              Development. I have a strong interest in developing algorithms and
+              data structures, which has significantly enhanced my programming
+              abilities and problem-solving skills. I am fluent in several
+              programming languages, including C++, C, C#, Java, TypeScript,
+              JavaScript, HTML, Haskell, and Python.
+            </p>
+          </div>
+        </div>
+      </section>
 
-// Interactive gravity function
-function enableGravity(container){
-  const skills = Array.from(container.querySelectorAll(".skill-btn"));
+      <!-- ===== PROJECTS ===== -->
+      <section id="Projects" class="container-fluid py-5">
+        <div class="container">
+          <h2
+            class="section-title text-success mb-5 text-center"
+            style="color: #198754"
+          >
+            Projects
+          </h2>
 
-  skills.forEach(skill => {
-    let offsetX, offsetY, startX, startY;
+          <div class="row g-4" id="projects-container">
+            <!-- Projects will be dynamically injected here -->
+          </div>
+        </div>
+      </section>
 
-    skill.addEventListener("mousedown", e => {
-      e.preventDefault();
-      skill.classList.add("dragging");
+      <!-- ===== LINKS ===== -->
+<section
+  id="Links"
+  class="container-fluid min-vh-100 d-flex align-items-center"
+>
+  <div class="container d-flex justify-content-center">
+    <div class="card shadow-sm p-4 text-center" style="max-width: 800px; width: 100%">
+      <h2 class="section-title mb-4" style="color: #198754">Links</h2>
 
-      startX = e.clientX;
-      startY = e.clientY;
+      <div class="d-flex justify-content-center gap-3">
+        <a
+          href="https://github.com/micaalle"
+          target="_blank"
+          class="btn btn-success"
+        >
+          GitHub
+        </a>
 
-      const rect = skill.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
+        <a
+          href="https://www.linkedin.com/in/michaelbiskup"
+          target="_blank"
+          class="btn btn-success"
+        >
+          LinkedIn
+        </a>
 
-      offsetX = rect.left - containerRect.left;
-      offsetY = rect.top - containerRect.top;
+        <a
+          href="https://mods.factorio.com/user/micaalle"
+          target="_blank"
+          class="btn btn-success"
+        >
+          Factorio Mods
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
-      skill.style.position = "absolute";
-      skill.style.left = offsetX + "px";
-      skill.style.top = offsetY + "px";
 
-      skill.style.transition = "none";
 
-      function move(e){
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+      <!-- ===== CONTACT ===== -->
+<section id="Contact" class="container-fluid min-vh-100 d-flex align-items-center">
+  <div class="container d-flex justify-content-center">
+    <div class="card shadow-sm p-5 text-center" style="max-width: 800px; width: 100%">
+      <h2 class="section-title mb-4" style="color: #198754">Contact Me</h2>
+      <p class="fs-5 text-muted">
+        Email me at
+        <a href="mailto:mbiskup2608@gmail.com">mbiskup2608@gmail.com</a>
+    </div>
+  </div>
+</section>
 
-        skill.style.left = offsetX + dx + "px";
-        skill.style.top = offsetY + dy + "px";
-      }
 
-      function up(){
-        skill.classList.remove("dragging");
-        skill.removeEventListener("mousemove", move);
-        skill.removeEventListener("mouseup", up);
+    <!-- ================= PROJECTS JS ================= -->
+    <script>
+      const container = document.getElementById("projects-container");
 
-        // Keep skill inside container bounds
-        const skillRect = skill.getBoundingClientRect();
-        const contRect = container.getBoundingClientRect();
+      // Fetch projects from backend API
+      fetch("/api/projects")
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then((projects) => {
+          console.log("Projects fetched:", projects); // Debugging
 
-        let left = Math.min(Math.max(skill.offsetLeft, 0), contRect.width - skillRect.width);
-        let top = Math.min(Math.max(skill.offsetTop, 0), contRect.height - skillRect.height);
+          projects.forEach((project) => {
+            const col = document.createElement("div");
+            col.className = "col-md-4 mb-4";
 
-        skill.style.left = left + "px";
-        skill.style.top = top + "px";
+            // Generate skills HTML safely
+            const skillsHTML =
+              project.skills && project.skills.length > 0
+                ? project.skills
+                    .map((skill) => {
+                      const iconHTML = skill.icon
+                        ? `<img src="/skills/svg/${encodeURIComponent(
+                            skill.name
+                          )}.svg" 
+                            class="mx-1" height="16" width="16" 
+                            alt="${skill.name} Icon" 
+                            onerror="this.style.display='none'"/>`
+                        : "";
+                      const link = skill.link || "#";
+                      return `
+                        <span class="m-1 btn btn-dark btn-sm">
+                          <a class="text-decoration-none text-white d-flex align-items-center justify-content-center"
+                             title="${skill.name}" href="${link}" target="_blank">
+                            ${iconHTML}${skill.name}
+                          </a>
+                        </span>
+                      `;
+                    })
+                    .join("")
+                : "";
 
-        skill.style.position = "relative"; // back to normal
-        skill.style.left = "";
-        skill.style.top = "";
-      }
+            // Project card HTML
+            col.innerHTML = `
+              <div class="card h-100 shadow-sm d-flex flex-column">
+                <div class="card-body d-flex flex-column align-items-center text-center">
+                  <div>
+                    <h5 class="card-title">${project.name}</h5>
+                    <p class="card-text">${project.description}</p>
+                    <p class="text-muted mb-2">
+                      ${project.startDate} - ${project.present ? "Present" : project.endDate}
+                    </p>
+                    <div class="mt-2 d-flex flex-wrap justify-content-center">
+                      ${skillsHTML}
+                    </div>
+                  </div>
+                  <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
+                </div>
+              </div>
+            `;
 
-      document.addEventListener("mousemove", move);
-      document.addEventListener("mouseup", up);
-    });
-  });
-}
-</script>
+            container.appendChild(col);
+          });
+        })
+        .catch((err) => console.error("Error fetching projects:", err));
+    </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <!-- Bootstrap JS (for mobile menu) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
