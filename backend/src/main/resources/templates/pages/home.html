@@ -3,13 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width" />
-<title>My Portfolio with Gravity Skills</title>
+<title>Portfolio with Interactive Skills</title>
 
-<!-- Bootstrap -->
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
 <style>
 body {
@@ -17,61 +13,46 @@ body {
   color: #e5e7eb;
 }
 
-section { scroll-margin-top: 90px; }
-.section-title { font-weight: 700; }
-
-header { background-color: #1a1a1a !important; }
-.navbar-brand, .nav-link { color: #e5e7eb !important; }
-.nav-link:hover { color: #198754 !important; }
-
 .card {
   background-color: #1e1e1e;
   border: 1px solid #2c2c2c;
-  color: #e5e7eb;
-  position: relative; /* physics container */
-  overflow: hidden;   /* contain skills */
+  position: relative; /* for dragging container */
 }
 
-.card-title { color: #f8fafc; }
-.text-muted { color: #94a3b8 !important; }
-a { color: #198754; }
-a:hover { color: #22c55e; }
-
-/* Physics Skills */
 .skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
   position: relative;
-  min-height: 90px; /* reserve space */
+  min-height: 50px; /* reserve space */
 }
 
 .skill-btn {
-  position: absolute;
-  user-select: none;
+  display: inline-block;
+  position: relative; /* default position */
   cursor: grab;
+  user-select: none;
+  touch-action: none;
 }
-.skill-btn.dragging { cursor: grabbing; z-index: 10; }
+.skill-btn.dragging {
+  cursor: grabbing;
+  z-index: 10;
+}
 </style>
 </head>
 <body>
 
-<header class="fixed-top shadow-sm">
-<nav class="navbar navbar-expand-lg container-fluid px-4">
-  <a class="navbar-brand fw-bold" style="color:#198754" href="#Home">My Portfolio</a>
-</nav>
-</header>
-
-<main class="mt-5 pt-5">
-<section id="Projects" class="container-fluid py-5">
-  <div class="container">
-    <h2 class="section-title text-success mb-5 text-center">Projects</h2>
-    <div class="row g-4" id="projects-container"></div>
-  </div>
-</section>
+<main class="container mt-5">
+  <h2 class="text-center text-success mb-4">Projects</h2>
+  <div class="row g-4" id="projects-container"></div>
 </main>
 
 <script>
-// Fetch projects from backend API
 const container = document.getElementById("projects-container");
 
+// Fetch projects from backend
 fetch("/api/projects")
   .then(res => res.json())
   .then(projects => {
@@ -79,114 +60,91 @@ fetch("/api/projects")
       const col = document.createElement("div");
       col.className = "col-md-4 mb-4";
 
-      // Build skills HTML from DB
       const skillsHTML = project.skills?.map(skill => `
-        <span class="m-1 btn btn-dark btn-sm skill-btn" title="${skill.name}">
-          <a class="text-decoration-none text-white d-flex align-items-center justify-content-center"
-             href="${skill.link || "#"}" target="_blank">
-             ${skill.name}
-          </a>
+        <span class="btn btn-dark btn-sm skill-btn" title="${skill.name}">
+          <a href="${skill.link || "#"}" target="_blank" class="text-decoration-none text-white d-flex align-items-center justify-content-center">${skill.name}</a>
         </span>
       `).join("") || "";
 
-      // Project card
       col.innerHTML = `
         <div class="card h-100 shadow-sm d-flex flex-column">
-          <div class="card-body d-flex flex-column align-items-center text-center">
-            <div>
-              <h5 class="card-title">${project.name}</h5>
-              <p class="card-text">${project.description}</p>
-              <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
-              <div class="mt-2 d-flex flex-wrap justify-content-center skills-container">
-                ${skillsHTML}
-              </div>
+          <div class="card-body d-flex flex-column text-center">
+            <h5 class="card-title">${project.name}</h5>
+            <p class="card-text">${project.description}</p>
+            <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
+
+            <div class="skills-container">
+              ${skillsHTML}
             </div>
+
             <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
           </div>
         </div>
       `;
-
       container.appendChild(col);
-      enablePhysics(col.querySelector(".skills-container"));
+
+      // Enable interactive gravity on drag
+      const skillsContainer = col.querySelector(".skills-container");
+      enableGravity(skillsContainer);
     });
   });
 
-// Physics function
-function enablePhysics(container) {
+// Interactive gravity function
+function enableGravity(container){
   const skills = Array.from(container.querySelectorAll(".skill-btn"));
-  if (!skills.length) return;
 
-  const rect = container.getBoundingClientRect();
-  const bodies = [];
+  skills.forEach(skill => {
+    let offsetX, offsetY, startX, startY;
 
-  // Initialize bodies with exact DOM positions
-  skills.forEach(el => {
-    const r = el.getBoundingClientRect();
-    const x = r.left - rect.left;
-    const y = r.top - rect.top;
-    el.style.left = x + "px";
-    el.style.top = y + "px";
-    bodies.push({
-      el, x, y,
-      vx: (Math.random()-0.5)*1.5,
-      vy: 0,
-      angle: Math.random()*360,
-      av: (Math.random()-0.5)*2,
-      w: r.width,
-      h: r.height,
-      dragging:false
-    });
-  });
+    skill.addEventListener("mousedown", e => {
+      e.preventDefault();
+      skill.classList.add("dragging");
 
-  const GRAVITY = 0.45, BOUNCE = 0.35, FRICTION=0.99;
+      startX = e.clientX;
+      startY = e.clientY;
 
-  function collide(a,b){
-    if(a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y){
-      const dx=(a.x+a.w/2)-(b.x+b.w/2);
-      const dy=(a.y+a.h/2)-(b.y+b.h/2);
-      if(Math.abs(dx)>Math.abs(dy)){
-        a.vx*=-BOUNCE; b.vx*=-BOUNCE;
-      }else{ a.vy*=-BOUNCE; b.vy*=-BOUNCE; }
-    }
-  }
+      const rect = skill.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
 
-  function tick(){
-    const w=container.clientWidth, h=container.clientHeight;
-    bodies.forEach(b=>{
-      if(!b.dragging){
-        b.vy+=GRAVITY; b.x+=b.vx; b.y+=b.vy; b.angle+=b.av;
-        b.vx*=FRICTION; b.vy*=FRICTION; b.av*=FRICTION;
+      offsetX = rect.left - containerRect.left;
+      offsetY = rect.top - containerRect.top;
 
-        if(b.x<0 || b.x+b.w>w){ b.vx*=-BOUNCE; b.x=Math.max(0,Math.min(b.x,w-b.w)); }
-        if(b.y<0 || b.y+b.h>h){ b.vy*=-BOUNCE; b.y=Math.max(0,Math.min(b.y,h-b.h)); }
+      skill.style.position = "absolute";
+      skill.style.left = offsetX + "px";
+      skill.style.top = offsetY + "px";
+
+      skill.style.transition = "none";
+
+      function move(e){
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        skill.style.left = offsetX + dx + "px";
+        skill.style.top = offsetY + dy + "px";
       }
-    });
-    for(let i=0;i<bodies.length;i++){
-      for(let j=i+1;j<bodies.length;j++){ collide(bodies[i],bodies[j]); }
-    }
-    bodies.forEach(b=>{
-      b.el.style.transform=`translate(${b.x}px,${b.y}px) rotate(${b.angle}deg)`;
-    });
-    requestAnimationFrame(tick);
-  }
-  tick();
 
-  // Dragging
-  bodies.forEach(b=>{
-    b.el.addEventListener("mousedown", e=>{
-      b.dragging=true; b.el.classList.add("dragging");
-      const sx=e.clientX, sy=e.clientY, ox=b.x, oy=b.y;
-
-      function move(e){ b.x=ox+(e.clientX-sx); b.y=oy+(e.clientY-sy); }
       function up(){
-        b.dragging=false; b.el.classList.remove("dragging");
-        b.vx=(Math.random()-0.5)*4; b.vy=-2; b.av=(Math.random()-0.5)*10;
-        document.removeEventListener("mousemove",move);
-        document.removeEventListener("mouseup",up);
+        skill.classList.remove("dragging");
+        skill.removeEventListener("mousemove", move);
+        skill.removeEventListener("mouseup", up);
+
+        // Keep skill inside container bounds
+        const skillRect = skill.getBoundingClientRect();
+        const contRect = container.getBoundingClientRect();
+
+        let left = Math.min(Math.max(skill.offsetLeft, 0), contRect.width - skillRect.width);
+        let top = Math.min(Math.max(skill.offsetTop, 0), contRect.height - skillRect.height);
+
+        skill.style.left = left + "px";
+        skill.style.top = top + "px";
+
+        skill.style.position = "relative"; // back to normal
+        skill.style.left = "";
+        skill.style.top = "";
       }
 
-      document.addEventListener("mousemove",move);
-      document.addEventListener("mouseup",up);
+      document.addEventListener("mousemove", move);
+      document.addEventListener("mouseup", up);
     });
   });
 }
@@ -195,4 +153,3 @@ function enablePhysics(container) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
