@@ -54,11 +54,10 @@
         color: #22c55e;
       }
 
-      /* Skills container and skill boxes */
       .skills-container {
         position: relative;
         width: 100%;
-        min-height: 200px; /* slightly larger base size */
+        min-height: 200px;
         overflow: hidden;
         margin-top: 0.5rem;
       }
@@ -138,7 +137,7 @@
                 class="btn btn-success"
                 >Resume</a
               >
-              <a href="#About" class="btn btn-success"> About Me </a>
+              <a href="#About" class="btn btn-success">About Me</a>
             </div>
           </div>
         </div>
@@ -171,11 +170,6 @@
             Projects
           </h2>
           <div class="row g-4" id="projects-container"></div>
-
-          <!-- Shuffle Skills Button -->
-          <div class="d-flex justify-content-center mt-4">
-            <button id="shuffle-skills" class="btn btn-success">Shuffle Skills</button>
-          </div>
         </div>
       </section>
 
@@ -238,61 +232,163 @@
       const container = document.getElementById("projects-container");
 
       fetch("/api/projects")
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          return res.json();
-        })
+        .then((res) =>
+          res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`),
+        )
         .then((projects) => {
           projects.forEach((project) => {
             const col = document.createElement("div");
             col.className = "col-md-4 mb-4";
 
             const skillsHTML =
-              project.skills && project.skills.length > 0
-                ? project.skills
-                    .map((s) => `<div class="skill">${s.name}</div>`)
-                    .join("")
-                : "";
+              project.skills
+                ?.map((s) => `<div class="skill">${s.name}</div>`)
+                .join("") || "";
 
             col.innerHTML = `
-              <div class="card h-100 shadow-sm d-flex flex-column">
-                <div class="card-body d-flex flex-column align-items-center text-center">
-                  <div>
-                    <h5 class="card-title">${project.name}</h5>
-                    <p class="card-text">${project.description}</p>
-                    <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
-                    <div class="skills-container" data-skills='${JSON.stringify(project.skills)}'>${skillsHTML}</div>
-                  </div>
-                  <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
-                </div>
+          <div class="card h-100 shadow-sm d-flex flex-column">
+            <div class="card-body d-flex flex-column align-items-center text-center">
+              <div>
+                <h5 class="card-title">${project.name}</h5>
+                <p class="card-text">${project.description}</p>
+                <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
+                <div class="skills-container">${skillsHTML}</div>
               </div>
-            `;
+              <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
+            </div>
+          </div>
+        `;
             container.appendChild(col);
           });
 
-          // Initialize physics once after first load
-          if (typeof initSkillsPhysics === "function") initSkillsPhysics();
+          initSkillsPhysics();
         });
 
-      // Shuffle Skills Button
-      document.getElementById("shuffle-skills").addEventListener("click", () => {
+      function initSkillsPhysics() {
         document.querySelectorAll(".skills-container").forEach((container) => {
-          // Remove current skills
-          container.innerHTML = "";
-
-          // Recreate skills from original data
-          const skillsData = JSON.parse(container.dataset.skills || "[]");
-          skillsData.forEach((skill) => {
-            const skillEl = document.createElement("div");
-            skillEl.className = "skill";
-            skillEl.textContent = skill.name;
-            container.appendChild(skillEl);
+          const skills = Array.from(container.querySelectorAll(".skill"));
+          const objects = skills.map((skill) => {
+            const rect = skill.getBoundingClientRect();
+            return {
+              el: skill,
+              x: Math.random() * (container.clientWidth - rect.width),
+              y: Math.random() * 20,
+              w: rect.width,
+              h: rect.height,
+              vx: 0,
+              vy: 0,
+              dragging: false,
+            };
           });
-        });
 
-        // Re-initialize physics so they fall naturally
-        if (typeof initSkillsPhysics === "function") initSkillsPhysics();
-      });
+          const gravity = 0.5;
+          const bounce = 0.6;
+
+          // Drag
+          objects.forEach((obj) => {
+            obj.el.addEventListener("mousedown", (e) => {
+              obj.dragging = true;
+              const offsetX =
+                e.clientX - obj.x - container.getBoundingClientRect().left;
+              const offsetY =
+                e.clientY - obj.y - container.getBoundingClientRect().top;
+
+              const move = (e) => {
+                obj.x =
+                  e.clientX - offsetX - container.getBoundingClientRect().left;
+                obj.y =
+                  e.clientY - offsetY - container.getBoundingClientRect().top;
+                obj.vx = 0;
+                obj.vy = 0;
+              };
+
+              const up = () => {
+                obj.dragging = false;
+                window.removeEventListener("mousemove", move);
+                window.removeEventListener("mouseup", up);
+              };
+
+              window.addEventListener("mousemove", move);
+              window.addEventListener("mouseup", up);
+            });
+          });
+
+          function updateDimensions(obj) {
+            const rect = obj.el.getBoundingClientRect();
+            obj.w = rect.width;
+            obj.h = rect.height;
+          }
+
+          function update() {
+            // Update hitboxes dynamically
+            objects.forEach(updateDimensions);
+
+            // Gravity & move
+            objects.forEach((a) => {
+              if (!a.dragging) {
+                a.vy += gravity;
+                a.x += a.vx;
+                a.y += a.vy;
+
+                if (a.x < 0) {
+                  a.x = 0;
+                  a.vx *= -bounce;
+                }
+                if (a.x + a.w > container.clientWidth) {
+                  a.x = container.clientWidth - a.w;
+                  a.vx *= -bounce;
+                }
+                if (a.y < 0) {
+                  a.y = 0;
+                  a.vy *= -bounce;
+                }
+                if (a.y + a.h > container.clientHeight) {
+                  a.y = container.clientHeight - a.h;
+                  a.vy *= -bounce;
+                }
+              }
+            });
+
+            // Collision between skills
+            for (let i = 0; i < objects.length; i++) {
+              for (let j = i + 1; j < objects.length; j++) {
+                const a = objects[i],
+                  b = objects[j];
+                const dx = a.x + a.w / 2 - (b.x + b.w / 2);
+                const dy = a.y + a.h / 2 - (b.y + b.h / 2);
+                const overlapX = (a.w + b.w) / 2 - Math.abs(dx);
+                const overlapY = (a.h + b.h) / 2 - Math.abs(dy);
+
+                if (overlapX > 0 && overlapY > 0) {
+                  if (overlapX < overlapY) {
+                    const sign = dx > 0 ? 1 : -1;
+                    a.x += (overlapX / 2) * sign;
+                    b.x -= (overlapX / 2) * sign;
+                    a.vx *= -bounce;
+                    b.vx *= -bounce;
+                  } else {
+                    const sign = dy > 0 ? 1 : -1;
+                    a.y += (overlapY / 2) * sign;
+                    b.y -= (overlapY / 2) * sign;
+                    a.vy *= -bounce;
+                    b.vy *= -bounce;
+                  }
+                }
+              }
+            }
+
+            // Apply to DOM
+            objects.forEach((obj) => {
+              obj.el.style.left = obj.x + "px";
+              obj.el.style.top = obj.y + "px";
+            });
+
+            requestAnimationFrame(update);
+          }
+
+          update();
+        });
+      }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
