@@ -54,11 +54,11 @@
         color: #22c55e;
       }
 
-      /* Skills container and skill boxes */
+      /* Skills container */
       .skills-container {
         position: relative;
         width: 100%;
-        min-height: 200px; /* slightly larger base size */
+        min-height: 200px;
         overflow: hidden;
         margin-top: 0.5rem;
       }
@@ -72,7 +72,6 @@
         border-radius: 4px;
         white-space: nowrap;
       }
-
       .skill.dragging {
         cursor: grabbing;
       }
@@ -81,9 +80,9 @@
   <body>
     <header class="fixed-top shadow-sm">
       <nav class="navbar navbar-expand-lg container-fluid px-4">
-        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home">
-          My Portfolio
-        </a>
+        <a class="navbar-brand fw-bold" style="color: #198754" href="#Home"
+          >My Portfolio</a
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -138,7 +137,7 @@
                 class="btn btn-success"
                 >Resume</a
               >
-              <a href="#About" class="btn btn-success"> About Me </a>
+              <a href="#About" class="btn btn-success">About Me</a>
             </div>
           </div>
         </div>
@@ -154,13 +153,9 @@
               About Me
             </h2>
             <p class="text-muted fs-5 text-center">
-              Earned my Bachelor’s degree in Computer Science at the University
-              of Central Florida, with a focus on Software Development. I have a
-              strong interest in developing algorithms and data structures,
-              which has significantly enhanced my programming abilities and
-              problem-solving skills. I am fluent in several programming
-              languages, including C++, C, C#, Java, TypeScript, JavaScript,
-              HTML, Haskell, and Python.
+              Earned my Bachelor’s degree in Computer Science at UCF, with a
+              focus on Software Development. Fluent in C++, C, C#, Java,
+              TypeScript, JavaScript, HTML, Haskell, and Python.
             </p>
           </div>
         </div>
@@ -233,25 +228,25 @@
       </section>
     </main>
 
+    <!-- Matter.js -->
+    <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+
     <script>
       const container = document.getElementById("projects-container");
 
       fetch("/api/projects")
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          return res.json();
-        })
+        .then((res) =>
+          res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`),
+        )
         .then((projects) => {
           projects.forEach((project) => {
             const col = document.createElement("div");
             col.className = "col-md-4 mb-4";
 
             const skillsHTML =
-              project.skills && project.skills.length > 0
-                ? project.skills
-                    .map((s) => `<div class="skill">${s.name}</div>`)
-                    .join("")
-                : "";
+              project.skills
+                ?.map((s) => `<div class="skill">${s.name}</div>`)
+                .join("") || "";
 
             col.innerHTML = `
               <div class="card h-100 shadow-sm d-flex flex-column">
@@ -269,167 +264,102 @@
             container.appendChild(col);
           });
 
-          // Initialize skill gravity physics with accurate hitboxes
-          function initSkillsPhysics() {
-            document
-              .querySelectorAll(".skills-container")
-              .forEach((container) => {
-                const skills = Array.from(container.querySelectorAll(".skill"));
-
-                const objects = skills.map((skill) => {
-                  const style = window.getComputedStyle(skill);
-                  const paddingX =
-                    parseFloat(style.paddingLeft) +
-                    parseFloat(style.paddingRight);
-                  const paddingY =
-                    parseFloat(style.paddingTop) +
-                    parseFloat(style.paddingBottom);
-
-                  return {
-                    el: skill,
-                    x:
-                      Math.random() *
-                      (container.clientWidth - skill.offsetWidth),
-                    y: Math.random() * 20,
-                    w: skill.offsetWidth + paddingX + 2, // buffer
-                    h: skill.offsetHeight + paddingY + 2,
-                    vx: 0,
-                    vy: 0,
-                    dragging: false,
-                  };
-                });
-
-                const gravity = 0.5;
-                const bounce = 0.6;
-
-                objects.forEach((obj) => {
-                  obj.el.addEventListener("mousedown", (e) => {
-                    obj.dragging = true;
-                    const offsetX =
-                      e.clientX -
-                      obj.x -
-                      container.getBoundingClientRect().left;
-                    const offsetY =
-                      e.clientY - obj.y - container.getBoundingClientRect().top;
-                    const move = (e) => {
-                      obj.x =
-                        e.clientX -
-                        offsetX -
-                        container.getBoundingClientRect().left;
-                      obj.y =
-                        e.clientY -
-                        offsetY -
-                        container.getBoundingClientRect().top;
-                      obj.vx = 0;
-                      obj.vy = 0;
-                    };
-                    const up = () => {
-                      obj.dragging = false;
-                      window.removeEventListener("mousemove", move);
-                      window.removeEventListener("mouseup", up);
-                    };
-                    window.addEventListener("mousemove", move);
-                    window.addEventListener("mouseup", up);
-                  });
-                });
-
-                function updateDimensions(obj) {
-                  const style = window.getComputedStyle(obj.el);
-                  const paddingX =
-                    parseFloat(style.paddingLeft) +
-                    parseFloat(style.paddingRight);
-                  const paddingY =
-                    parseFloat(style.paddingTop) +
-                    parseFloat(style.paddingBottom);
-                  obj.w = obj.el.offsetWidth + paddingX + 2;
-                  obj.h = obj.el.offsetHeight + paddingY + 2;
-                }
-
-                function update() {
-                  objects.forEach(updateDimensions);
-
-                  // gravity & movement
-                  for (let i = 0; i < objects.length; i++) {
-                    const a = objects[i];
-                    if (!a.dragging) {
-                      a.vy += gravity;
-                      a.x += a.vx;
-                      a.y += a.vy;
-
-                      // container walls
-                      if (a.x < 0) {
-                        a.x = 0;
-                        a.vx *= -bounce;
-                      }
-                      if (a.x + a.w > container.clientWidth) {
-                        a.x = container.clientWidth - a.w;
-                        a.vx *= -bounce;
-                      }
-                      if (a.y < 0) {
-                        a.y = 0;
-                        a.vy *= -bounce;
-                      }
-                      if (a.y + a.h > container.clientHeight) {
-                        a.y = container.clientHeight - a.h;
-                        a.vy *= -bounce;
-                      }
-                    }
-                  }
-
-                  // collisions between skills
-                  for (let i = 0; i < objects.length; i++) {
-                    for (let j = i + 1; j < objects.length; j++) {
-                      const a = objects[i],
-                        b = objects[j];
-                      const dx = a.x - b.x,
-                        dy = a.y - b.y;
-                      if (
-                        Math.abs(dx) < (a.w + b.w) / 2 &&
-                        Math.abs(dy) < (a.h + b.h) / 2
-                      ) {
-                        const overlapX = a.w / 2 + b.w / 2 - Math.abs(dx);
-                        const overlapY = a.h / 2 + b.h / 2 - Math.abs(dy);
-                        if (overlapX > 0 && overlapY > 0) {
-                          if (overlapX < overlapY) {
-                            if (dx > 0) {
-                              a.x += overlapX / 2;
-                              b.x -= overlapX / 2;
-                            } else {
-                              a.x -= overlapX / 2;
-                              b.x += overlapX / 2;
-                            }
-                            a.vx *= -bounce;
-                            b.vx *= -bounce;
-                          } else {
-                            if (dy > 0) {
-                              a.y += overlapY / 2;
-                              b.y -= overlapY / 2;
-                            } else {
-                              a.y -= overlapY / 2;
-                              b.y += overlapY / 2;
-                            }
-                            a.vy *= -bounce;
-                            b.vy *= -bounce;
-                          }
-                        }
-                      }
-                    }
-                  }
-
-                  objects.forEach((obj) => {
-                    obj.el.style.left = obj.x + "px";
-                    obj.el.style.top = obj.y + "px";
-                  });
-
-                  requestAnimationFrame(update);
-                }
-
-                update();
-              });
-          }
-
-          initSkillsPhysics();
+          initMatterSkills();
         });
+
+      function initMatterSkills() {
+        const {
+          Engine,
+          Render,
+          World,
+          Bodies,
+          Body,
+          Mouse,
+          MouseConstraint,
+          Composite,
+        } = Matter;
+
+        document.querySelectorAll(".skills-container").forEach((container) => {
+          const engine = Engine.create();
+          engine.world.gravity.y = 1;
+
+          // Create Matter bodies for each skill
+          const skillElements = Array.from(
+            container.querySelectorAll(".skill"),
+          );
+          const skillBodies = skillElements.map((el) => {
+            const rect = el.getBoundingClientRect();
+            const body = Bodies.rectangle(
+              Math.random() * container.clientWidth,
+              20,
+              rect.width,
+              rect.height,
+              {
+                restitution: 0.5,
+                friction: 0.1,
+              },
+            );
+            body.element = el;
+            World.add(engine.world, body);
+            return body;
+          });
+
+          // Container walls
+          const thickness = 100;
+          const walls = [
+            Bodies.rectangle(
+              container.clientWidth / 2,
+              -thickness / 2,
+              container.clientWidth,
+              thickness,
+              { isStatic: true },
+            ),
+            Bodies.rectangle(
+              container.clientWidth / 2,
+              container.clientHeight + thickness / 2,
+              container.clientWidth,
+              thickness,
+              { isStatic: true },
+            ),
+            Bodies.rectangle(
+              -thickness / 2,
+              container.clientHeight / 2,
+              thickness,
+              container.clientHeight,
+              { isStatic: true },
+            ),
+            Bodies.rectangle(
+              container.clientWidth + thickness / 2,
+              container.clientHeight / 2,
+              thickness,
+              container.clientHeight,
+              { isStatic: true },
+            ),
+          ];
+          World.add(engine.world, walls);
+
+          // Mouse drag
+          const mouse = Mouse.create(container);
+          const mouseConstraint = MouseConstraint.create(engine, {
+            mouse,
+            constraint: { stiffness: 0.2, render: { visible: false } },
+          });
+          World.add(engine.world, mouseConstraint);
+
+          // Render loop
+          (function update() {
+            Engine.update(engine, 1000 / 60);
+            skillBodies.forEach((b) => {
+              b.element.style.left =
+                (b.position.x - b.bounds.max.x + b.bounds.min.x) / 2 + "px";
+              b.element.style.top =
+                (b.position.y - b.bounds.max.y + b.bounds.min.y) / 2 + "px";
+              b.element.style.transform = `rotate(${b.angle}rad)`;
+            });
+            requestAnimationFrame(update);
+          })();
+        });
+      }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
