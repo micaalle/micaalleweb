@@ -259,118 +259,156 @@
             <div>
               <h5 class="card-title">${project.name}</h5>
               <p class="card-text">${project.description}</p>
-              <p class="text-muted mb-2">${project.startDate} - ${project.present ? "Present" : project.endDate}</p>
+              <p class="text-muted mb-2">${project.startDate} - ${
+                project.present ? "Present" : project.endDate
+              }</p>
               <div class="skills-container">${skillsHTML}</div>
             </div>
             <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
           </div>
-        </div>`;
+        </div>
+      `;
             container.appendChild(col);
           });
 
-          function initSkillsPhysics() {
-  document.querySelectorAll(".skills-container").forEach(container => {
-    const skills = Array.from(container.querySelectorAll(".skill"));
+          // Now call the physics initialization after projects are added
+          initSkillsPhysics();
+        })
+        .catch((err) => console.error("Error fetching projects:", err));
 
-    // Create physics objects with accurate dimensions
-    const objects = skills.map(skill => {
-      const rect = skill.getBoundingClientRect();
-      return {
-        el: skill,
-        x: Math.random() * (container.clientWidth - rect.width),
-        y: Math.random() * 20,
-        w: rect.width,
-        h: rect.height,
-        vx: 0,
-        vy: 0,
-        dragging: false
-      };
-    });
+      function initSkillsPhysics() {
+        document.querySelectorAll(".skills-container").forEach((container) => {
+          const skills = Array.from(container.querySelectorAll(".skill"));
 
-    const gravity = 0.5;
-    const bounce = 0.6;
+          const objects = skills.map((skill) => {
+            const rect = skill.getBoundingClientRect();
+            return {
+              el: skill,
+              x: Math.random() * (container.clientWidth - rect.width),
+              y: Math.random() * 20,
+              w: rect.width,
+              h: rect.height,
+              vx: 0,
+              vy: 0,
+              dragging: false,
+            };
+          });
 
-    // Dragging
-    objects.forEach(obj => {
-      obj.el.addEventListener("mousedown", e => {
-        obj.dragging = true;
-        const offsetX = e.clientX - obj.x - container.getBoundingClientRect().left;
-        const offsetY = e.clientY - obj.y - container.getBoundingClientRect().top;
-        const move = e => {
-          obj.x = e.clientX - offsetX - container.getBoundingClientRect().left;
-          obj.y = e.clientY - offsetY - container.getBoundingClientRect().top;
-          obj.vx = 0; obj.vy = 0;
-        };
-        const up = () => {
-          obj.dragging = false;
-          window.removeEventListener("mousemove", move);
-          window.removeEventListener("mouseup", up);
-        };
-        window.addEventListener("mousemove", move);
-        window.addEventListener("mouseup", up);
-      });
-    });
+          const gravity = 0.5;
+          const bounce = 0.6;
 
-    function updateDimensions(obj) {
-      const rect = obj.el.getBoundingClientRect();
-      obj.w = rect.width;
-      obj.h = rect.height;
-    }
+          // Dragging
+          objects.forEach((obj) => {
+            obj.el.addEventListener("mousedown", (e) => {
+              obj.dragging = true;
+              const offsetX =
+                e.clientX - obj.x - container.getBoundingClientRect().left;
+              const offsetY =
+                e.clientY - obj.y - container.getBoundingClientRect().top;
+              const move = (e) => {
+                obj.x =
+                  e.clientX - offsetX - container.getBoundingClientRect().left;
+                obj.y =
+                  e.clientY - offsetY - container.getBoundingClientRect().top;
+                obj.vx = 0;
+                obj.vy = 0;
+              };
+              const up = () => {
+                obj.dragging = false;
+                window.removeEventListener("mousemove", move);
+                window.removeEventListener("mouseup", up);
+              };
+              window.addEventListener("mousemove", move);
+              window.addEventListener("mouseup", up);
+            });
+          });
 
-    function update() {
-      // Update sizes each frame for perfect collisions
-      objects.forEach(updateDimensions);
+          function updateDimensions(obj) {
+            const rect = obj.el.getBoundingClientRect();
+            obj.w = rect.width;
+            obj.h = rect.height;
+          }
 
-      // Gravity & movement
-      for (let i = 0; i < objects.length; i++) {
-        const a = objects[i];
-        if (!a.dragging) {
-          a.vy += gravity;
-          a.x += a.vx;
-          a.y += a.vy;
+          function update() {
+            objects.forEach(updateDimensions);
 
-          // Wall collisions
-          if (a.x < 0) { a.x = 0; a.vx *= -bounce; }
-          if (a.x + a.w > container.clientWidth) { a.x = container.clientWidth - a.w; a.vx *= -bounce; }
-          if (a.y < 0) { a.y = 0; a.vy *= -bounce; }
-          if (a.y + a.h > container.clientHeight) { a.y = container.clientHeight - a.h; a.vy *= -bounce; }
-        }
-      }
+            for (let i = 0; i < objects.length; i++) {
+              const a = objects[i];
+              if (!a.dragging) {
+                a.vy += gravity;
+                a.x += a.vx;
+                a.y += a.vy;
 
-      // Skill-to-skill collisions
-      for (let i = 0; i < objects.length; i++) {
-        for (let j = i + 1; j < objects.length; j++) {
-          const a = objects[i], b = objects[j];
-          const dx = a.x - b.x, dy = a.y - b.y;
-          if (Math.abs(dx) < (a.w + b.w)/2 && Math.abs(dy) < (a.h + b.h)/2) {
-            const overlapX = (a.w/2 + b.w/2) - Math.abs(dx);
-            const overlapY = (a.h/2 + b.h/2) - Math.abs(dy);
-            if (overlapX > 0 && overlapY > 0) {
-              if (overlapX < overlapY) {
-                if (dx > 0) { a.x += overlapX/2; b.x -= overlapX/2; } else { a.x -= overlapX/2; b.x += overlapX/2; }
-                a.vx *= -bounce; b.vx *= -bounce;
-              } else {
-                if (dy > 0) { a.y += overlapY/2; b.y -= overlapY/2; } else { a.y -= overlapY/2; b.y += overlapY/2; }
-                a.vy *= -bounce; b.vy *= -bounce;
+                if (a.x < 0) {
+                  a.x = 0;
+                  a.vx *= -bounce;
+                }
+                if (a.x + a.w > container.clientWidth) {
+                  a.x = container.clientWidth - a.w;
+                  a.vx *= -bounce;
+                }
+                if (a.y < 0) {
+                  a.y = 0;
+                  a.vy *= -bounce;
+                }
+                if (a.y + a.h > container.clientHeight) {
+                  a.y = container.clientHeight - a.h;
+                  a.vy *= -bounce;
+                }
               }
             }
+
+            // Collisions
+            for (let i = 0; i < objects.length; i++) {
+              for (let j = i + 1; j < objects.length; j++) {
+                const a = objects[i],
+                  b = objects[j];
+                const dx = a.x - b.x,
+                  dy = a.y - b.y;
+                if (
+                  Math.abs(dx) < (a.w + b.w) / 2 &&
+                  Math.abs(dy) < (a.h + b.h) / 2
+                ) {
+                  const overlapX = a.w / 2 + b.w / 2 - Math.abs(dx);
+                  const overlapY = a.h / 2 + b.h / 2 - Math.abs(dy);
+                  if (overlapX > 0 && overlapY > 0) {
+                    if (overlapX < overlapY) {
+                      if (dx > 0) {
+                        a.x += overlapX / 2;
+                        b.x -= overlapX / 2;
+                      } else {
+                        a.x -= overlapX / 2;
+                        b.x += overlapX / 2;
+                      }
+                      a.vx *= -bounce;
+                      b.vx *= -bounce;
+                    } else {
+                      if (dy > 0) {
+                        a.y += overlapY / 2;
+                        b.y -= overlapY / 2;
+                      } else {
+                        a.y -= overlapY / 2;
+                        b.y += overlapY / 2;
+                      }
+                      a.vy *= -bounce;
+                      b.vy *= -bounce;
+                    }
+                  }
+                }
+              }
+            }
+
+            objects.forEach((obj) => {
+              obj.el.style.left = obj.x + "px";
+              obj.el.style.top = obj.y + "px";
+            });
+
+            requestAnimationFrame(update);
           }
-        }
+
+          update();
+        });
       }
-
-      // Apply positions to DOM
-      objects.forEach(obj => {
-        obj.el.style.left = obj.x + "px";
-        obj.el.style.top = obj.y + "px";
-      });
-
-      requestAnimationFrame(update);
-    }
-
-    update();
-  });
-}
-
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
