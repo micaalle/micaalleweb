@@ -269,18 +269,17 @@
             container.appendChild(col);
           });
 
-          initPhysics();
+          initSkillsPhysics();
         })
         .catch((err) => console.error("Error fetching projects:", err));
 
-      // Physics engine for skills with auto-growing container
-      function initPhysics() {
+      function initSkillsPhysics() {
         document.querySelectorAll(".skills-container").forEach((container) => {
           const skills = Array.from(container.querySelectorAll(".skill"));
           const objects = skills.map((skill) => ({
             el: skill,
-            x: Math.random() * (container.clientWidth - 50),
-            y: Math.random() * (container.clientHeight - 30),
+            x: Math.random() * (container.clientWidth - skill.offsetWidth),
+            y: Math.random() * 20, // start near top
             w: skill.offsetWidth,
             h: skill.offsetHeight,
             vx: 0,
@@ -303,7 +302,8 @@
                   e.clientX - offsetX - container.getBoundingClientRect().left;
                 obj.y =
                   e.clientY - offsetY - container.getBoundingClientRect().top;
-                obj.vx = obj.vy = 0;
+                obj.vx = 0;
+                obj.vy = 0;
               };
               const up = () => {
                 obj.dragging = false;
@@ -316,7 +316,7 @@
           });
 
           function update() {
-            // Gravity & movement
+            // gravity & movement
             for (let i = 0; i < objects.length; i++) {
               const a = objects[i];
               if (!a.dragging) {
@@ -335,11 +335,10 @@
                   a.y = 0;
                   a.vy *= -bounce;
                 }
-                // container height grows automatically
               }
             }
 
-            // Collisions
+            // collisions
             for (let i = 0; i < objects.length; i++) {
               for (let j = i + 1; j < objects.length; j++) {
                 const a = objects[i],
@@ -350,7 +349,6 @@
                   Math.abs(dx) < (a.w + b.w) / 2 &&
                   Math.abs(dy) < (a.h + b.h) / 2
                 ) {
-                  if (a.dragging || b.dragging) continue;
                   const overlapX = a.w / 2 + b.w / 2 - Math.abs(dx);
                   const overlapY = a.h / 2 + b.h / 2 - Math.abs(dy);
                   if (overlapX > 0 && overlapY > 0) {
@@ -380,13 +378,13 @@
               }
             }
 
-            // Update DOM
+            // update DOM
             objects.forEach((obj) => {
               obj.el.style.left = obj.x + "px";
               obj.el.style.top = obj.y + "px";
             });
 
-            // Dynamically grow container height to fit lowest skill
+            // expand container dynamically
             let maxY = 0;
             objects.forEach((obj) => {
               maxY = Math.max(maxY, obj.y + obj.h);
