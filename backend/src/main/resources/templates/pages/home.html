@@ -233,7 +233,7 @@
 
       fetch("/api/projects")
         .then((res) =>
-          res.ok ? res.json() : Promise.reject(HTTP ${res.status}),
+          res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`),
         )
         .then((projects) => {
           projects.forEach((project) => {
@@ -242,10 +242,10 @@
 
             const skillsHTML =
               project.skills
-                ?.map((s) => <div class="skill">${s.name}</div>)
+                ?.map((s) => `<div class="skill">${s.name}</div>`)
                 .join("") || "";
 
-            col.innerHTML =
+            col.innerHTML = `
           <div class="card h-100 shadow-sm d-flex flex-column">
             <div class="card-body d-flex flex-column align-items-center text-center">
               <div>
@@ -257,7 +257,7 @@
               <a href="${project.link}" target="_blank" class="btn btn-success mt-auto">View Project</a>
             </div>
           </div>
-        ;
+        `;
             container.appendChild(col);
           });
 
