@@ -58,8 +58,7 @@
       .skills-container {
         position: relative;
         width: 100%;
-        min-height: 120px; /* minimum size */
-        height: auto; /* allow dynamic growth */
+        min-height: 200px; /* slightly larger base size */
         overflow: hidden;
         margin-top: 0.5rem;
       }
@@ -279,7 +278,7 @@
           const objects = skills.map((skill) => ({
             el: skill,
             x: Math.random() * (container.clientWidth - skill.offsetWidth),
-            y: Math.random() * 20, // start near top
+            y: Math.random() * 20,
             w: skill.offsetWidth,
             h: skill.offsetHeight,
             vx: 0,
@@ -335,6 +334,10 @@
                   a.y = 0;
                   a.vy *= -bounce;
                 }
+                if (a.y + a.h > container.clientHeight) {
+                  a.y = container.clientHeight - a.h;
+                  a.vy *= -bounce;
+                } // bottom boundary
               }
             }
 
@@ -384,13 +387,6 @@
               obj.el.style.top = obj.y + "px";
             });
 
-            // expand container dynamically
-            let maxY = 0;
-            objects.forEach((obj) => {
-              maxY = Math.max(maxY, obj.y + obj.h);
-            });
-            container.style.height = Math.max(maxY + 10, 120) + "px";
-
             requestAnimationFrame(update);
           }
 
@@ -402,5 +398,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
-
 
