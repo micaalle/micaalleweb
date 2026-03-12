@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 public class MediaResourceConfig implements WebMvcConfigurer {
 
-    @Value("${app.media-root:/Users/server/portfolio-media}")
+    @Value("${app.media-root:${user.home}/portfolio-media}")
     private String mediaRoot;
 
     @Override
