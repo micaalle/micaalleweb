@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <header class="site-header" th:fragment="navbar(activePage)">
+    <nav class="navbar navbar-expand-lg portfolio-nav">
+      <div class="container">
+        <a class="navbar-brand portfolio-brand" th:href="@{/}">Michael Biskup</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#portfolioNavbar"
+          aria-controls="portfolioNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="portfolioNavbar">
+          <ul class="navbar-nav gap-lg-2">
+            <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'home'} ? ' active'" th:href="@{/}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'projects'} ? ' active'" th:href="@{/projects}">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'recent'} ? ' active'" th:href="@{/recent}">Recent</a></li>
+            <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'photos'} ? ' active'" th:href="@{/photos}">Photos</a></li>
+            <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'contact'} ? ' active'" th:href="@{/contact}">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+</body>
+</html>

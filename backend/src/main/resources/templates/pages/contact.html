@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Michael Biskup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/site.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/navbar :: navbar(${activePage})}"></div>
+
+    <main class="page-shell page-shell-tight">
+      <section class="section-block first-section">
+        <div class="container contact-shell contact-shell-single">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h1 class="section-title section-title-xl">Links.</h1>
+          </div>
+          <div class="contact-grid contact-grid-single">
+            <a class="contact-card move_when_hovered" href="mailto:mbiskup2608@gmail.com">
+              <span class="contact-label">Email</span>
+              <strong>mbiskup2608@gmail.com</strong>
+            </a>
+            <a class="contact-card move_when_hovered" href="https://github.com/micaalle" target="_blank">
+              <span class="contact-label">GitHub</span>
+              <strong>github.com/micaalle</strong>
+            </a>
+            <a class="contact-card move_when_hovered" href="https://linkedin.com/in/michaelbiskup" target="_blank">
+              <span class="contact-label">LinkedIn</span>
+              <strong>linkedin.com/in/michaelbiskup</strong>
+            </a>
+            <a class="contact-card move_when_hovered" href="https://mods.factorio.com/user/micaalle" target="_blank">
+              <span class="contact-label">Factorio Mods</span>
+              <strong>mods.factorio.com/user/micaalle</strong>
+            </a>
+            <a class="contact-card move_when_hovered" th:href="@{/Michael Biskup Resume.pdf}" target="_blank">
+              <span class="contact-label">Résumé</span>
+              <strong>Open PDF</strong>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
