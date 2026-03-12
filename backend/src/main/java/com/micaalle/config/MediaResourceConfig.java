@@ -31,9 +31,9 @@ public class MediaResourceConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/media/**")
                 .addResourceLocations(location)
+                .setCachePeriod(3600)
                 .resourceChain(true)
-                .addResolver(new MediaFallbackResolver())
-                .setCachePeriod(3600);
+                .addResolver(new MediaFallbackResolver());
     }
 
     private static class MediaFallbackResolver extends PathResourceResolver {
