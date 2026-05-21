@@ -34,10 +34,7 @@
                  th:href="${project.repositoryUrl}"
                  target="_blank">
                 <article class="content-card content-card-reading move_when_hovered">
-                  <img class="content-card-image"
-                       th:if="${project.coverImageUrl != null}"
-                       th:src="${project.coverImageUrl}"
-                       th:alt="${project.title}" />
+                  <img class="content-card-image" th:if="${project.coverImageUrl != null}" th:src="${project.coverImageUrl}" th:alt="${project.title}" />
                   <div class="content-card-body content-card-body-reading">
                     <div class="badge-row">
                       <span class="badge-soft" th:if="${project.featured}">Featured</span>
@@ -52,7 +49,7 @@
                             th:text="${tag}"></span>
                     </div>
                     <div class="link-row mt-auto">
-                      <span class="inline-link">Repository →</span>
+                      <span class="inline-link">Repository</span>
                     </div>
                   </div>
                 </article>
