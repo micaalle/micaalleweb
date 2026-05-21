@@ -103,7 +103,7 @@
                 <div class="tag-row">
                   <span class="chip" th:each="tag : ${project.tags}" th:text="${tag}"></span>
                 </div>
-                <a class="inline-link" th:href="@{/projects/{slug}(slug=${project.slug})}">Read project page</a>
+                <a class="inline-link" th:href="${project.repositoryUrl}" target="_blank">Repository</a>
               </div>
             </article>
           </div>
