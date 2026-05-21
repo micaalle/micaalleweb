@@ -20,46 +20,95 @@
       }
     </style>
   </head>
+
   <body>
     <div th:replace="~{fragments/navbar :: navbar(${activePage})}"></div>
+
     <main class="page-shell page-shell-tight">
       <section class="section-block first-section">
         <div class="container container-wide">
           <p class="eyebrow">Projects</p>
           <h1 class="section-title section-title-xl projects-page-title">Projects.</h1>
+
           <div class="card-grid project-grid-full">
             <div th:each="project : ${projects}">
               <a class="project-card-link"
                  th:if="${project.repositoryUrl != null}"
                  th:href="${project.repositoryUrl}"
                  target="_blank">
+
                 <article class="content-card content-card-reading move_when_hovered">
-                  <img class="content-card-image" th:if="${project.coverImageUrl != null}" th:src="${project.coverImageUrl}" th:alt="${project.title}" />
+
+                  <img class="content-card-image"
+                       th:if="${project.coverImageUrl != null}"
+                       th:src="${project.coverImageUrl}"
+                       th:alt="${project.title}" />
+
                   <div class="content-card-body content-card-body-reading">
+
                     <div class="badge-row">
                       <span class="badge-soft" th:if="${project.featured}">Featured</span>
                     </div>
+
                     <p class="meta-row"
                        th:text="${#temporals.format(project.startDate, 'MMM yyyy') + (project.endDate != null ? ' – ' + #temporals.format(project.endDate, 'MMM yyyy') : ' – Present')}"></p>
+
                     <h2 th:text="${project.title}"></h2>
+
                     <p th:text="${project.summary}"></p>
+
                     <div class="tag-row">
                       <span class="chip"
                             th:each="tag : ${project.tags}"
                             th:text="${tag}"></span>
                     </div>
+
                     <div class="link-row mt-auto">
                       <span class="inline-link">Repository</span>
                     </div>
+
                   </div>
                 </article>
+
               </a>
             </div>
           </div>
+
         </div>
       </section>
     </main>
+
     <div th:replace="~{fragments/footer :: footer}"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- height check-->
+    <script>
+      function normalizeCardHeights() {
+        const cards = document.querySelectorAll(".content-card");
+
+        let maxHeight = 0;
+
+        cards.forEach(card => {
+          card.style.height = "auto";
+        });
+
+        cards.forEach(card => {
+          const height = card.offsetHeight;
+          if (height > maxHeight) {
+            maxHeight = height;
+          }
+        });
+
+        cards.forEach(card => {
+          card.style.height = maxHeight + "px";
+        });
+      }
+
+      window.addEventListener("load", normalizeCardHeights);
+      window.addEventListener("resize", normalizeCardHeights);
+    </script>
+
   </body>
 </html>
