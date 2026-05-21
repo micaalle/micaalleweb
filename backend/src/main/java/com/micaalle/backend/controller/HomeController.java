@@ -124,9 +124,9 @@ public class HomeController {
 
     private List<String> currentFocusItems() {
         return List.of(
-                "Finishing the Vulkan Spectral Ocean project by fixing implementations of spray and water foaming.",
-                "GameBoy Advance Emulator. A long-term project to emulate the GBA without needing the 16KB bios file",
-                "3D room mapping tool using a rotating LiDAR sensor with reconstruction via WebGL."
+                "Second iteration of the 3D room mapping tool with reconstruction using multiple scan positions",
+                "Solar system gravity well simulation made with Vulkan",
+                "Portfolio website redesign"
         );
     }
 }
