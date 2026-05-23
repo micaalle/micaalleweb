@@ -1,10 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | Michael Biskup</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" th:href="@{/site.css}" />
   </head>
   <body>
@@ -16,7 +19,10 @@
           <div>
             <p class="eyebrow">Home / About</p>
             <h1 class="hero-title">Hi, I&#39;m Michael.</h1>
-            <p class="hero-copy">I&#39;m a Junior software developer who recently graduated from the University of Central Florida.</p>
+            <p class="hero-copy">
+              I&#39;m a Junior software developer who recently graduated from
+              the University of Central Florida.
+            </p>
             <div class="tag-row hero-signal-row">
               <span class="chip">C++</span>
               <span class="chip">C#</span>
@@ -27,11 +33,19 @@
               <span class="chip">HTML</span>
               <span class="chip">CSS</span>
               <span class="chip">SQL</span>
-
             </div>
             <div class="hero-actions">
-              <a class="btn btn-outline-light btn-lg move_when_hovered" th:href="@{/Michael Biskup Resume.pdf}" target="_blank">Resume</a>
-              <a class="btn btn-outline-light btn-lg move_when_hovered" th:href="@{/projects}">Projects</a>
+              <a
+                class="btn btn-outline-light btn-lg move_when_hovered"
+                th:href="@{/Michael Biskup Resume.pdf}"
+                target="_blank"
+                >Resume</a
+              >
+              <a
+                class="btn btn-outline-light btn-lg move_when_hovered"
+                th:href="@{/projects}"
+                >Projects</a
+              >
             </div>
           </div>
         </div>
@@ -48,20 +62,35 @@
           </div>
 
           <div class="about-timeline">
-            <article class="timeline-entry" th:each="entry : ${timelineEntries}">
+            <article
+              class="timeline-entry"
+              th:each="entry : ${timelineEntries}"
+            >
               <div class="timeline-entry-rail" aria-hidden="true">
                 <span class="timeline-entry-dot"></span>
               </div>
               <div class="timeline-entry-card move_when_hovered">
                 <div class="timeline-entry-top">
                   <div>
-                    <p class="timeline-entry-category" th:text="${entry.category()}"></p>
+                    <p
+                      class="timeline-entry-category"
+                      th:text="${entry.category()}"
+                    ></p>
                     <h3 th:text="${entry.title()}"></h3>
-                    <p class="timeline-subtitle" th:text="${entry.subtitle()}"></p>
+                    <p
+                      class="timeline-subtitle"
+                      th:text="${entry.subtitle()}"
+                    ></p>
                   </div>
-                  <span class="timeline-period timeline-period-pill" th:text="${entry.period()}"></span>
+                  <span
+                    class="timeline-period timeline-period-pill"
+                    th:text="${entry.period()}"
+                  ></span>
                 </div>
-                <p class="timeline-entry-copy" th:text="${entry.description()}"></p>
+                <p
+                  class="timeline-entry-copy"
+                  th:text="${entry.description()}"
+                ></p>
               </div>
             </article>
           </div>
@@ -77,7 +106,10 @@
             </div>
           </div>
           <div class="focus-strip">
-            <article class="focus-pill move_when_hovered" th:each="focus : ${currentFocusItems}">
+            <article
+              class="focus-pill move_when_hovered"
+              th:each="focus : ${currentFocusItems}"
+            >
               <p th:text="${focus}"></p>
             </article>
           </div>
@@ -94,18 +126,36 @@
             <a class="inline-link" th:href="@{/projects}">See all projects</a>
           </div>
           <div class="card-grid card-grid-3 featured-project-grid">
-            <article class="content-card move_when_hovered" th:each="project : ${featuredProjects}">
-              <img class="content-card-image" th:if="${project.coverImageUrl != null}" th:src="${project.coverImageUrl}" th:alt="${project.title}" />
+            <a
+              class="content-card move_when_hovered"
+              th:each="project : ${featuredProjects}"
+              th:href="${project.repositoryUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                class="content-card-image"
+                th:if="${project.coverImageUrl != null}"
+                th:src="${project.coverImageUrl}"
+                th:alt="${project.title}"
+              />
               <div class="content-card-body">
-                <p class="meta-row" th:text="${#temporals.format(project.startDate, 'MMM yyyy') + (project.endDate != null ? ' – ' + #temporals.format(project.endDate, 'MMM yyyy') : ' – Present')}"></p>
+                <p
+                  class="meta-row"
+                  th:text="${#temporals.format(project.startDate, 'MMM yyyy') + (project.endDate != null ? ' – ' + #temporals.format(project.endDate, 'MMM yyyy') : ' – Present')}"
+                ></p>
                 <h3 th:text="${project.title}"></h3>
                 <p th:text="${project.summary}"></p>
                 <div class="tag-row">
-                  <span class="chip" th:each="tag : ${project.tags}" th:text="${tag}"></span>
+                  <span
+                    class="chip"
+                    th:each="tag : ${project.tags}"
+                    th:text="${tag}"
+                  ></span>
                 </div>
-                <a class="inline-link" th:href="${project.repositoryUrl}" target="_blank">Repository</a>
+                <span class="inline-link">Repository</span>
               </div>
-            </article>
+            </a>
           </div>
         </div>
       </section>
@@ -119,13 +169,28 @@
             </div>
             <a class="inline-link" th:href="@{/recent}">See all entries</a>
           </div>
-          <div class="recent-list" th:if="${recentPosts != null and !recentPosts.isEmpty()}">
-            <a class="recent-row move_when_hovered" th:each="post : ${recentPosts}" th:href="@{/recent/{slug}(slug=${post.slug})}">
-              <span class="recent-date" th:text="${#temporals.format(post.publishedAt, 'yyyy-MM-dd')}"></span>
+          <div
+            class="recent-list"
+            th:if="${recentPosts != null and !recentPosts.isEmpty()}"
+          >
+            <a
+              class="recent-row move_when_hovered"
+              th:each="post : ${recentPosts}"
+              th:href="@{/recent/{slug}(slug=${post.slug})}"
+            >
+              <span
+                class="recent-date"
+                th:text="${#temporals.format(post.publishedAt, 'yyyy-MM-dd')}"
+              ></span>
               <span class="recent-title" th:text="${post.title}"></span>
             </a>
           </div>
-          <p class="empty-state-message" th:if="${recentPosts == null or recentPosts.isEmpty()}">No current entries.</p>
+          <p
+            class="empty-state-message"
+            th:if="${recentPosts == null or recentPosts.isEmpty()}"
+          >
+            No current entries.
+          </p>
         </div>
       </section>
     </main>
